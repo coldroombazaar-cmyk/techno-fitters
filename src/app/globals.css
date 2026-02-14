@@ -2,16 +2,25 @@
 
 @theme {
   /* Brand Colors */
-  --color-background: #020604;
-  --color-foreground: rgba(248, 250, 252, 0.9);
-  --color-foreground-muted: rgba(248, 250, 252, 0.6);
+  --color-background: #F5F7F6;
+  --color-foreground: #1E1E1E;
+  --color-foreground-muted: #6C757D;
+  --color-foreground-inverse: #ffffff;
+  /* Added for dark backgrounds like Hero/Footer */
 
-  --color-brand-green: #00583b;
-  --color-brand-leaf: #84bd00;
-  --color-brand-ripple: #008ed6;
+  /* New Palette */
+  --color-brand-green: #0F7C3E;
+  --color-brand-green-hover: #0C6231;
 
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-glass: rgba(2, 6, 4, 0.7);
+  --color-brand-leaf: #6DBE45;
+  --color-brand-leaf-pale: #C8E27D;
+
+  --color-brand-blue: #1F8FD6;
+  --color-brand-blue-hover: #176CB0;
+  --color-brand-primary-blue: #2C5FA8;
+
+  --color-border: rgba(108, 117, 125, 0.2);
+  --color-glass: rgba(255, 255, 255, 0.8);
 
   /* Font Families */
   --font-display: var(--font-geist-sans), 'Inter', sans-serif;
@@ -20,8 +29,8 @@
 
 @layer base {
   :root {
-    --background: #020604;
-    --foreground: rgba(248, 250, 252, 0.9);
+    --background: #F5F7F6;
+    --foreground: #1E1E1E;
   }
 
   html {

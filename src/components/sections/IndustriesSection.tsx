@@ -14,11 +14,11 @@ const INDUSTRIES = [
 
 export default function IndustriesSection() {
     return (
-        <section id="industries" className="py-24 bg-background/50 border-t border-white/5">
+        <section id="industries" className="py-24 bg-white border-t border-gray-100">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-light text-white mb-6">Industries We Serve</h2>
-                    <p className="text-white/60 text-lg max-w-2xl mx-auto">
+                    <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-6">Industries We Serve</h2>
+                    <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                         Specialized cooling solutions for sectors where temperature integrity is non-negotiable.
                     </p>
                 </div>
@@ -32,12 +32,12 @@ export default function IndustriesSection() {
                             viewport={{ once: true }}
                             whileHover={{ scale: 1.05, borderColor: 'var(--brand-green)' }}
                             transition={{ duration: 0.3, delay: index * 0.05 }}
-                            className="flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-xl cursor-default group hover:bg-white/10 transition-colors"
+                            className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-xl cursor-default group hover:shadow-lg transition-all duration-300"
                         >
-                            <div className="text-3xl text-white/40 mb-4 group-hover:text-brand-leaf transition-colors duration-300">
+                            <div className="text-3xl text-gray-400 mb-4 group-hover:text-brand-green transition-colors duration-300">
                                 {industry.icon}
                             </div>
-                            <span className="text-sm font-medium text-white/80 text-center group-hover:text-white transition-colors">
+                            <span className="text-sm font-medium text-gray-700 text-center group-hover:text-gray-900 transition-colors">
                                 {industry.name}
                             </span>
                         </motion.div>

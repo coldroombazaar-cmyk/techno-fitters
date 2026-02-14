@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import type { ScrollStoryPoint } from '@/types/scroll';
+import QuoteModal from './ui/QuoteModal';
 
 const TOTAL_FRAMES = 40;
 const FRAME_PATH = '/multipleframe/ezgif-frame-';
@@ -41,6 +42,7 @@ export default function ModularColdRoomScroll() {
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [currentFrame, setCurrentFrame] = useState(0);
+    const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -137,7 +139,7 @@ export default function ModularColdRoomScroll() {
     useEffect(() => {
         if (!imagesLoaded) return;
 
-        const unsubscribe = scrollYProgress.on('change', (latest) => {
+        const unsubscribe = scrollYProgress.on('change', (latest: number) => {
             const frameIndex = Math.min(
                 Math.floor(latest * TOTAL_FRAMES),
                 TOTAL_FRAMES - 1
@@ -148,24 +150,16 @@ export default function ModularColdRoomScroll() {
         return () => unsubscribe();
     }, [scrollYProgress, imagesLoaded]);
 
+    const scrollToServices = () => {
+        const servicesSection = document.getElementById('services');
+        if (servicesSection) {
+            servicesSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
     return (
-        <div ref={containerRef} className="relative h-[400vh] bg-[#020604]">
-            {/* Loading State */}
-            {!imagesLoaded && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#020604]">
-                    <div className="flex flex-col items-center gap-4">
-                        <div className="h-1 w-32 overflow-hidden rounded-full bg-white/10">
-                            <motion.div
-                                className="h-full bg-brand-green"
-                                initial={{ width: '0%' }}
-                                animate={{ width: '100%' }}
-                                transition={{ duration: 2, ease: 'easeInOut' }}
-                            />
-                        </div>
-                        <p className="text-sm tracking-wide text-white/40">Loading experience</p>
-                    </div>
-                </div>
-            )}
+        <div ref={containerRef} className="relative h-[400vh] bg-[#1E1E1E]">
+            {/* ... (existing loading state) */}
 
             {/* Sticky Canvas Container */}
             <div className="sticky top-0 h-screen w-full overflow-hidden">
@@ -177,7 +171,7 @@ export default function ModularColdRoomScroll() {
 
                 {/* Gradient Overlay for Professional Look */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#000000_100%)] opacity-90 pointer-events-none mix-blend-multiply" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#020604] via-transparent to-[#020604]/50 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E1E] via-transparent to-[#1E1E1E]/50 pointer-events-none" />
 
                 {/* Story Overlays */}
                 {imagesLoaded && (
@@ -188,11 +182,19 @@ export default function ModularColdRoomScroll() {
                                 point={point}
                                 scrollProgress={scrollYProgress}
                                 isHero={index === 0}
+                                onRequestConsultation={() => setIsQuoteModalOpen(true)}
+                                onViewSolutions={scrollToServices}
                             />
                         ))}
                     </div>
                 )}
             </div>
+
+            <QuoteModal
+                isOpen={isQuoteModalOpen}
+                onClose={() => setIsQuoteModalOpen(false)}
+                type="quote"
+            />
         </div>
     );
 }
@@ -202,10 +204,14 @@ function StoryOverlay({
     point,
     scrollProgress,
     isHero = false,
+    onRequestConsultation,
+    onViewSolutions,
 }: {
     point: ScrollStoryPoint;
     scrollProgress: any;
     isHero?: boolean;
+    onRequestConsultation?: () => void;
+    onViewSolutions?: () => void;
 }) {
     const fadeInStart = Math.max(0, point.progress - 0.1);
     const fadeOutEnd = Math.min(1, point.progress + 0.15);
@@ -244,10 +250,16 @@ function StoryOverlay({
                 )}
                 {point.cta && isHero && (
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="rounded-none bg-brand-green px-8 py-3 text-sm font-medium tracking-widest text-white transition-all duration-300 hover:bg-brand-green/90 shadow-lg shadow-brand-green/20">
+                        <button
+                            onClick={onRequestConsultation}
+                            className="rounded-none bg-brand-green px-8 py-3 text-sm font-medium tracking-widest text-white transition-all duration-300 hover:bg-brand-green/90 shadow-lg shadow-brand-green/20"
+                        >
                             REQUEST CONSULTATION
                         </button>
-                        <button className="rounded-none border border-white/20 bg-white/5 px-8 py-3 text-sm font-medium tracking-widest text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40">
+                        <button
+                            onClick={onViewSolutions}
+                            className="rounded-none border border-white/20 bg-white/5 px-8 py-3 text-sm font-medium tracking-widest text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40"
+                        >
                             VIEW SOLUTIONS
                         </button>
                     </div>

@@ -30,21 +30,21 @@ export default function Navbar() {
     return (
         <>
             <header
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-md border-b border-border' : 'bg-transparent'
+                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md border-b border-gray-200 shadow-sm' : 'bg-transparent'
                     }`}
             >
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="relative w-10 h-10 overflow-hidden bg-white/10 rounded-lg p-1">
+                        <div className={`relative w-10 h-10 overflow-hidden rounded-lg p-1 transition-colors ${scrolled ? 'bg-brand-green/10' : 'bg-white/10'}`}>
                             <img
                                 src="/TechnoFitters.png"
                                 alt="TechnoFitters Logo"
                                 className="w-full h-full object-contain"
                             />
                         </div>
-                        <span className="text-xl font-medium tracking-tight text-white group-hover:text-brand-leaf transition-colors duration-300">
-                            Techno<span className="text-white/70">Fitters</span>
+                        <span className={`text-xl font-medium tracking-tight transition-colors duration-300 ${scrolled ? 'text-gray-900' : 'text-white'} group-hover:text-brand-green`}>
+                            Techno<span className={`transition-colors ${scrolled ? 'text-gray-500' : 'text-white/70'}`}>Fitters</span>
                         </span>
                     </Link>
 
@@ -54,7 +54,7 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-sm font-medium text-white/70 hover:text-white transition-colors duration-200 tracking-wide"
+                                className={`text-sm font-medium transition-colors duration-200 tracking-wide ${scrolled ? 'text-gray-600 hover:text-brand-green' : 'text-white/80 hover:text-white'}`}
                             >
                                 {link.name}
                             </Link>
@@ -73,7 +73,7 @@ export default function Navbar() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="md:hidden p-2 text-white/80 hover:text-white"
+                        className={`md:hidden p-2 transition-colors ${scrolled ? 'text-gray-900 hover:text-brand-green' : 'text-white/80 hover:text-white'}`}
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         <span className="sr-only">Open menu</span>
@@ -92,14 +92,14 @@ export default function Navbar() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="md:hidden bg-background border-b border-white/10 overflow-hidden"
+                            className="md:hidden bg-white border-b border-gray-100 overflow-hidden shadow-xl"
                         >
                             <nav className="flex flex-col p-6 gap-4">
                                 {NAV_LINKS.map((link) => (
                                     <Link
                                         key={link.name}
                                         href={link.href}
-                                        className="text-lg font-medium text-white/80 hover:text-brand-leaf transition-colors py-2 border-b border-white/5"
+                                        className="text-lg font-medium text-gray-700 hover:text-brand-green transition-colors py-2 border-b border-gray-100"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         {link.name}

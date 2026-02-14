@@ -11,7 +11,7 @@ const STATS = [
 
 export default function StatsSection() {
     return (
-        <section className="py-20 bg-background border-b border-white/5">
+        <section className="py-20 bg-background border-b border-gray-200">
             <div className="container mx-auto px-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                     {STATS.map((stat, index) => (
@@ -23,10 +23,10 @@ export default function StatsSection() {
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             className="text-center"
                         >
-                            <h3 className="text-4xl md:text-5xl font-light text-brand-leaf bg-clip-text text-transparent bg-gradient-to-br from-brand-leaf to-emerald-400 mb-2">
+                            <h3 className="text-4xl md:text-5xl font-light text-brand-green mb-2">
                                 {stat.value}
                             </h3>
-                            <p className="text-white/60 text-sm tracking-widest uppercase">{stat.label}</p>
+                            <p className="text-gray-600 text-sm tracking-widest uppercase font-medium">{stat.label}</p>
                         </motion.div>
                     ))}
                 </div>
