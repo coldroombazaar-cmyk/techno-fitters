@@ -1,0 +1,89 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { FaIndustry, FaTools, FaSnowflake, FaDraftingCompass, FaWarehouse } from 'react-icons/fa';
+import QuoteModal from '../ui/QuoteModal';
+
+const SERVICES = [
+    {
+        icon: <FaWarehouse />,
+        title: 'Cold Storage Manufacturing',
+        description: 'Custom-built modular cold rooms with high-density PUF panels for superior thermal efficiency.'
+    },
+    {
+        icon: <FaTools />,
+        title: 'Renovation & Modernization',
+        description: 'Upgrading legacy facilities with modern insulation, doors, and refrigeration systems.'
+    },
+    {
+        icon: <FaDraftingCompass />,
+        title: 'Health Check & Audits',
+        description: 'Comprehensive thermal and energy audits to optimize performance and reduce operational costs.'
+    },
+    {
+        icon: <FaSnowflake />,
+        title: 'Refrigeration Infrastructure',
+        description: 'End-to-end design and installation of industrial refrigeration units and pipework.'
+    },
+    {
+        icon: <FaIndustry />,
+        title: 'Turnkey Projects',
+        description: 'From concept to commissioning – we handle civil, mechanical, and electrical integration.'
+    },
+];
+
+export default function ServicesSection() {
+    const [isConsultantModalOpen, setIsConsultantModalOpen] = useState(false);
+
+    return (
+        <section id="services" className="py-24 bg-background relative overflow-hidden">
+            {/* Background elements */}
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-green/20 to-transparent" />
+
+            <div className="container mx-auto px-6 relative z-10">
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <h2 className="text-3xl md:text-5xl font-light text-white mb-6">Precision Engineering Services</h2>
+                    <p className="text-white/60 text-lg mb-8">
+                        We deliver industrial-grade cold chain solutions tailored to your operational requirements.
+                    </p>
+                    <button
+                        onClick={() => setIsConsultantModalOpen(true)}
+                        className="inline-flex items-center gap-2 px-8 py-3 bg-brand-green hover:bg-brand-leaf text-white font-semibold rounded-full transition-all duration-300 shadow-lg shadow-brand-green/20 hover:shadow-brand-green/40 hover:-translate-y-1"
+                    >
+                        Get Consultant <span className="text-xl">→</span>
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {SERVICES.map((service, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            className="group p-8 bg-white/5 border border-white/10 hover:border-brand-green/50 transition-all duration-300 hover:bg-white/10"
+                        >
+                            <div className="text-brand-ripple text-3xl mb-6 group-hover:scale-110 transition-transform duration-300">
+                                {service.icon}
+                            </div>
+                            <h3 className="text-xl font-medium text-white mb-3 group-hover:text-brand-leaf transition-colors">
+                                {service.title}
+                            </h3>
+                            <p className="text-white/60 text-sm leading-relaxed">
+                                {service.description}
+                            </p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+
+            <QuoteModal
+                isOpen={isConsultantModalOpen}
+                onClose={() => setIsConsultantModalOpen(false)}
+                type="consultant"
+            />
+        </section>
+    );
+}

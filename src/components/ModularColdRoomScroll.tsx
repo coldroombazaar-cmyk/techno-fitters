@@ -10,26 +10,28 @@ const FRAME_PATH = '/multipleframe/ezgif-frame-';
 const STORY_POINTS: ScrollStoryPoint[] = [
     {
         progress: 0,
-        headline: 'Precision. Engineered Cold.',
+        headline: 'Engineering Reliable Cold.',
+        subtext: 'End-to-end cold chain infrastructure built, repaired and optimized by experts.',
         align: 'center',
+        cta: true,
     },
     {
         progress: 0.3,
         headline: 'Modular Architecture',
-        subtext: 'Built for controlled environments.',
+        subtext: 'Built for controlled environments with varied temperature zones.',
         align: 'left',
     },
     {
         progress: 0.6,
         headline: 'Thermal Integrity',
-        subtext: 'Every layer designed for performance.',
+        subtext: 'High-density PUF panels designed for zero thermal leakage.',
         align: 'right',
     },
     {
         progress: 0.9,
-        headline: 'Build Your Cold Room',
+        headline: 'Precision Engineered',
+        subtext: 'Every component tested for industrial durability.',
         align: 'center',
-        cta: true,
     },
 ];
 
@@ -147,14 +149,14 @@ export default function ModularColdRoomScroll() {
     }, [scrollYProgress, imagesLoaded]);
 
     return (
-        <div ref={containerRef} className="relative h-[400vh] bg-[#050505]">
+        <div ref={containerRef} className="relative h-[400vh] bg-[#020604]">
             {/* Loading State */}
             {!imagesLoaded && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#020604]">
                     <div className="flex flex-col items-center gap-4">
                         <div className="h-1 w-32 overflow-hidden rounded-full bg-white/10">
                             <motion.div
-                                className="h-full bg-white/40"
+                                className="h-full bg-brand-green"
                                 initial={{ width: '0%' }}
                                 animate={{ width: '100%' }}
                                 transition={{ duration: 2, ease: 'easeInOut' }}
@@ -166,12 +168,16 @@ export default function ModularColdRoomScroll() {
             )}
 
             {/* Sticky Canvas Container */}
-            <div className="sticky top-0 h-screen w-full">
+            <div className="sticky top-0 h-screen w-full overflow-hidden">
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 h-full w-full"
                     style={{ imageRendering: 'auto' }}
                 />
+
+                {/* Gradient Overlay for Professional Look */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#000000_100%)] opacity-90 pointer-events-none mix-blend-multiply" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020604] via-transparent to-[#020604]/50 pointer-events-none" />
 
                 {/* Story Overlays */}
                 {imagesLoaded && (
@@ -181,6 +187,7 @@ export default function ModularColdRoomScroll() {
                                 key={index}
                                 point={point}
                                 scrollProgress={scrollYProgress}
+                                isHero={index === 0}
                             />
                         ))}
                     </div>
@@ -194,9 +201,11 @@ export default function ModularColdRoomScroll() {
 function StoryOverlay({
     point,
     scrollProgress,
+    isHero = false,
 }: {
     point: ScrollStoryPoint;
     scrollProgress: any;
+    isHero?: boolean;
 }) {
     const fadeInStart = Math.max(0, point.progress - 0.1);
     const fadeOutEnd = Math.min(1, point.progress + 0.15);
@@ -214,29 +223,34 @@ function StoryOverlay({
     );
 
     const alignmentClasses = {
-        left: 'items-start text-left pl-8 md:pl-16 lg:pl-24',
-        center: 'items-center text-center',
-        right: 'items-end text-right pr-8 md:pr-16 lg:pr-24',
+        left: 'items-start text-left pl-8 md:pl-16 lg:pl-32',
+        center: 'items-center text-center px-4',
+        right: 'items-end text-right pr-8 md:pr-16 lg:pr-32',
     };
 
     return (
         <motion.div
             style={{ opacity, y }}
-            className={`absolute inset-0 flex flex-col justify-center ${alignmentClasses[point.align]} pointer-events-auto px-6`}
+            className={`absolute inset-0 flex flex-col justify-center ${alignmentClasses[point.align]} pointer-events-auto`}
         >
-            <div className="max-w-2xl">
-                <h2 className="text-4xl font-light tracking-tight text-white/90 md:text-5xl lg:text-6xl">
+            <div className={`max-w-4xl ${isHero ? 'mt-0' : 'mt-20'}`}>
+                <h2 className={`${isHero ? 'text-5xl md:text-7xl font-medium' : 'text-4xl md:text-5xl font-light'} tracking-tight text-white mb-6 leading-tight`}>
                     {point.headline}
                 </h2>
                 {point.subtext && (
-                    <p className="mt-4 text-base font-light tracking-wide text-white/60 md:text-lg lg:text-xl">
+                    <p className={`${isHero ? 'text-xl md:text-2xl text-white/80' : 'text-lg md:text-xl text-white/60'} font-light tracking-wide max-w-2xl mx-auto mb-10`}>
                         {point.subtext}
                     </p>
                 )}
-                {point.cta && (
-                    <button className="mt-8 rounded-none border border-white/20 bg-white/5 px-8 py-3 text-sm font-light tracking-widest text-white/90 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/30">
-                        CONFIGURE NOW
-                    </button>
+                {point.cta && isHero && (
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button className="rounded-none bg-brand-green px-8 py-3 text-sm font-medium tracking-widest text-white transition-all duration-300 hover:bg-brand-green/90 shadow-lg shadow-brand-green/20">
+                            REQUEST CONSULTATION
+                        </button>
+                        <button className="rounded-none border border-white/20 bg-white/5 px-8 py-3 text-sm font-medium tracking-widest text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40">
+                            VIEW SOLUTIONS
+                        </button>
+                    </div>
                 )}
             </div>
         </motion.div>
