@@ -79,7 +79,7 @@ export default function WhyChooseUsSection() {
                             className="relative aspect-square md:aspect-video lg:aspect-square bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-100"
                         >
                             <img
-                                src="/assets/engineering-design.png"
+                                src="/assets/engineering-diagram.png"
                                 alt="TechnoFitters Engineering Diagram"
                                 className="w-full h-full object-cover"
                             />
