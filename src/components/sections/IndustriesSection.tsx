@@ -14,7 +14,7 @@ const INDUSTRIES = [
 
 export default function IndustriesSection() {
     return (
-        <section id="industries" className="py-24 bg-white border-t border-gray-100">
+        <section id="industries" className="pt-12 md:pt-16 pb-24 bg-white border-t border-gray-100">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-6">Industries We Serve</h2>

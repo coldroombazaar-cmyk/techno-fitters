@@ -3,6 +3,9 @@
 import { motion } from 'framer-motion';
 import { FaShieldAlt, FaLeaf, FaStopwatch, FaCogs } from 'react-icons/fa';
 
+// Change this path to use a different image (place your image in public/assets/ or public/)
+const ABOUT_SECTION_IMAGE = '/assets/engineering-diagram.png';
+
 const REASONS = [
     {
         icon: <FaCogs />,
@@ -79,7 +82,7 @@ export default function WhyChooseUsSection() {
                             className="relative aspect-square md:aspect-video lg:aspect-square bg-white rounded-2xl overflow-hidden shadow-2xl border border-gray-100"
                         >
                             <img
-                                src="/assets/engineering-diagram.png"
+                                src={ABOUT_SECTION_IMAGE}
                                 alt="TechnoFitters Engineering Diagram"
                                 className="w-full h-full object-cover"
                             />
