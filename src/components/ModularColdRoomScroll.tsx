@@ -28,12 +28,6 @@ const STORY_POINTS: ScrollStoryPoint[] = [
         subtext: 'High-density PUF panels designed for zero thermal leakage.',
         align: 'right',
     },
-    {
-        progress: 0.9,
-        headline: 'Precision Engineered',
-        subtext: 'Every component tested for industrial durability.',
-        align: 'center',
-    },
 ];
 
 export default function ModularColdRoomScroll() {
@@ -236,15 +230,9 @@ function StoryOverlay({
     );
 
     // Track interactability based on opacity to prevent underlying overlays from blocking clicks
-    const [isInteractable, setIsInteractable] = useState(isHero);
+    const [isInteractable, setIsInteractable] = useState(false);
 
     useEffect(() => {
-        // For the hero section, we want it to be interactable immediately
-        if (isHero) {
-            setIsInteractable(true);
-            return;
-        }
-
         const unsubscribe = opacity.on('change', (v: number) => {
             const visible = v > 0.5;
             if (visible !== isInteractable) {
@@ -252,7 +240,7 @@ function StoryOverlay({
             }
         });
         return () => unsubscribe();
-    }, [opacity, isInteractable, isHero]);
+    }, [opacity, isInteractable]);
 
     const alignmentClasses = {
         left: 'items-start text-left pl-4 sm:pl-8 md:pl-16 lg:pl-32 pr-4',

@@ -31,22 +31,22 @@ export default function Navbar() {
         <>
             <header
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-                    ? 'bg-white/5 backdrop-blur-2xl border-b border-black/10 shadow-sm'
-                    : 'bg-black/5 backdrop-blur-2xl border-b border-white/10'
+                    ? 'bg-black/70 border-b border-black/20 shadow-lg'
+                    : 'bg-black/30 backdrop-blur-2xl border-b border-white/10'
                     }`}
             >
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className={`relative w-10 h-10 overflow-hidden rounded-lg p-1 transition-colors ${scrolled ? 'bg-brand-green/10' : 'bg-white/10'}`}>
+                        <div className={`relative w-10 h-10 overflow-hidden rounded-lg p-1 transition-colors ${scrolled ? 'bg-black/40' : 'bg-white/10'}`}>
                             <img
                                 src="/TechnoFitters.png"
                                 alt="TechnoFitters Logo"
                                 className="w-full h-full object-contain"
                             />
                         </div>
-                        <span className={`text-xl font-medium tracking-tight transition-colors duration-300 ${scrolled ? 'text-gray-900' : 'text-white'} group-hover:text-brand-green`}>
-                            Techno<span className={`transition-colors ${scrolled ? 'text-gray-500' : 'text-white/70'}`}>Fitters</span>
+                        <span className={`text-xl font-medium tracking-tight transition-colors duration-300 ${scrolled ? 'text-white' : 'text-white'} group-hover:text-brand-green`}>
+                            Techno<span className={`transition-colors ${scrolled ? 'text-white/80' : 'text-white/70'}`}>Fitters</span>
                         </span>
                     </Link>
 
@@ -56,7 +56,7 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className={`text-sm font-medium transition-colors duration-200 tracking-wide ${scrolled ? 'text-gray-600 hover:text-brand-green' : 'text-white/80 hover:text-white'}`}
+                                className={`text-sm font-medium transition-colors duration-200 tracking-wide ${scrolled ? 'text-white hover:text-white' : 'text-white/90 hover:text-white'}`}
                             >
                                 {link.name}
                             </Link>
@@ -75,7 +75,7 @@ export default function Navbar() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className={`md:hidden p-2 transition-colors ${scrolled ? 'text-gray-900 hover:text-brand-green' : 'text-white/80 hover:text-white'}`}
+                        className={`md:hidden p-2 transition-colors ${scrolled ? 'text-white hover:text-white' : 'text-white/90 hover:text-white'}`}
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     >
                         <span className="sr-only">Open menu</span>
