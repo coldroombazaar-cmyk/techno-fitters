@@ -51,9 +51,9 @@ export default function Footer() {
                     <div>
                         <h4 className="text-white font-medium mb-4 tracking-wide text-sm">Company</h4>
                         <ul className="space-y-2">
-                            <FooterLink href="#about">About Us</FooterLink>
-                            <FooterLink href="#projects">Projects</FooterLink>
-                            <FooterLink href="#careers">Careers</FooterLink>
+                            <FooterLink href="/about">About Us</FooterLink>
+                            <FooterLink href="/safety">Safety & Compliance</FooterLink>
+                            <FooterLink href="/disclaimer">Disclaimer</FooterLink>
                             <FooterLink href="#contact">Contact</FooterLink>
                         </ul>
                     </div>
@@ -69,7 +69,7 @@ export default function Footer() {
                                 <a href="tel:+917860000929" className="hover:text-brand-green transition-colors">+91 786-0000-929</a>
                             </p>
                             <p>
-                                <a href="mailto:technofitters@gmail.com" className="hover:text-brand-green transition-colors">technofitters@gmail.com</a>
+                                <a href="mailto:info@technofitters.in" className="hover:text-brand-green transition-colors">info@technofitters.in</a>
                             </p>
                         </address>
                     </div>
@@ -80,7 +80,7 @@ export default function Footer() {
                     <p>&copy; {currentYear} TechnoFitters. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
+                        <Link href="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link>
                     </div>
                 </div>
             </div>

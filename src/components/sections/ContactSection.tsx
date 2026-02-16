@@ -98,7 +98,7 @@ export default function ContactSection() {
                                 <div>
                                     <h4 className="text-brand-green font-bold text-lg mb-1">Email</h4>
                                     <p className="text-gray-600 hover:text-brand-highlight transition-colors">
-                                        <a href="mailto:technofitters@gmail.com">technofitters@gmail.com</a>
+                                        <a href="mailto:info@technofitters.in">info@technofitters.in</a>
                                     </p>
                                 </div>
                             </div>

@@ -34,7 +34,7 @@ const jsonLd = {
     "addressCountry": "IN"
   },
   "telephone": "+917860000929",
-  "email": "technofitters@gmail.com",
+  "email": "info@technofitters.in",
   "url": "https://technofitters.com",
   "openingHoursSpecification": {
     "@type": "OpeningHoursSpecification",

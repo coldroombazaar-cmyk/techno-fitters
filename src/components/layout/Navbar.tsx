@@ -8,7 +8,7 @@ import QuoteModal from '../ui/QuoteModal';
 
 const NAV_LINKS = [
     { name: 'Services', href: '#services' },
-    { name: 'About', href: '#about' },
+    { name: 'About', href: '/about' },
     { name: 'Industries', href: '#industries' },
     { name: 'Process', href: '#process' },
     { name: 'Contact', href: '#contact' },

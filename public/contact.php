@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Email content
-    $recipient = "technofitters@gmail.com";
+    $recipient = "info@technofitters.in";
     $subject = "New Contact from TechnoFitters Website: $name";
     
     $email_content = "Name: $name\n";

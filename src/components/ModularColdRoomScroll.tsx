@@ -243,25 +243,25 @@ function StoryOverlay({
                 y,
                 pointerEvents: isInteractable ? 'auto' : 'none',
             }}
-            className={`absolute inset-0 flex flex-col justify-center ${alignmentClasses[point.align]} ${isInteractable ? 'z-40' : 'z-0'} pointer-events-none`}
+            className={`absolute inset-0 flex flex-col justify-center ${alignmentClasses[point.align]} ${isInteractable ? 'z-40' : 'z-0'} pointer-events-none p-6 sm:p-12`}
         >
-            <div className={`max-w-4xl w-full ${isHero ? 'mt-0' : 'mt-8 sm:mt-12 md:mt-20'}`}>
-                <h2 className={`${isHero ? 'text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-medium' : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light'} tracking-tight text-white mb-4 sm:mb-6 leading-tight`}>
+            <div className={`max-w-4xl w-full ${isHero ? 'mt-0' : 'mt-8 sm:mt-12'}`}>
+                <h2 className={`${isHero ? 'text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold' : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light'} tracking-tight text-white mb-6 sm:mb-8 leading-[1.1]`}>
                     {point.headline}
                 </h2>
                 {point.subtext && (
-                    <p className={`${isHero ? 'text-base sm:text-lg md:text-xl lg:text-2xl text-white/80' : 'text-sm sm:text-base md:text-lg lg:text-xl text-white/60'} font-light tracking-wide max-w-2xl mb-6 sm:mb-10 ${point.align === 'center' ? 'mx-auto' : point.align === 'right' ? 'ml-auto mr-0' : 'mr-auto ml-0'}`}>
+                    <p className={`${isHero ? 'text-sm sm:text-lg md:text-xl lg:text-2xl text-white/90' : 'text-xs sm:text-base md:text-lg lg:text-xl text-white/60'} font-light tracking-wide max-w-xl md:max-w-2xl mb-8 sm:mb-12 ${point.align === 'center' ? 'mx-auto' : point.align === 'right' ? 'ml-auto mr-0' : 'mr-auto ml-0'} leading-relaxed`}>
                         {point.subtext}
                     </p>
                 )}
                 {point.cta && isHero && (
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2">
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch sm:items-center px-4 max-w-sm sm:max-w-none mx-auto">
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 onRequestConsultation?.();
                             }}
-                            className="z-50 rounded-none bg-brand-green px-5 py-2.5 sm:px-8 sm:py-3 text-xs sm:text-sm font-medium tracking-widest text-white transition-all duration-300 hover:bg-brand-green/90 shadow-lg shadow-brand-green/20 pointer-events-auto min-h-[44px] sm:min-h-0"
+                            className="z-50 rounded bg-brand-green hover:bg-brand-leaf px-8 py-4 text-xs sm:text-sm font-bold tracking-[0.2em] text-white transition-all duration-300 shadow-xl shadow-brand-green/20 pointer-events-auto uppercase"
                         >
                             REQUEST CONSULTATION
                         </button>
@@ -270,7 +270,7 @@ function StoryOverlay({
                                 e.stopPropagation();
                                 onViewSolutions?.();
                             }}
-                            className="z-50 rounded-none border border-white/20 bg-white/5 px-5 py-2.5 sm:px-8 sm:py-3 text-xs sm:text-sm font-medium tracking-widest text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40 pointer-events-auto min-h-[44px] sm:min-h-0"
+                            className="z-50 rounded border border-white/30 bg-white/5 hover:bg-white/10 px-8 py-4 text-xs sm:text-sm font-bold tracking-[0.2em] text-white backdrop-blur-md transition-all duration-300 pointer-events-auto uppercase"
                         >
                             VIEW SOLUTIONS
                         </button>
