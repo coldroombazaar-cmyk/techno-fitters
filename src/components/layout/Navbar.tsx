@@ -7,11 +7,11 @@ import { HiMenu, HiX } from 'react-icons/hi';
 import QuoteModal from '../ui/QuoteModal';
 
 const NAV_LINKS = [
-    { name: 'Services', href: '#services' },
+    { name: 'Services', href: '/#services' },
     { name: 'About', href: '/about' },
-    { name: 'Industries', href: '#industries' },
-    { name: 'Process', href: '#process' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Industries', href: '/#industries' },
+    { name: 'Process', href: '/#process' },
+    { name: 'Contact', href: '/#contact' },
 ];
 
 export default function Navbar() {
@@ -26,6 +26,21 @@ export default function Navbar() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        // If it looks like a hash link on the homepage
+        if (href.startsWith('/#')) {
+            const targetId = href.replace('/#', '');
+            const element = document.getElementById(targetId);
+
+            if (window.location.pathname === '/' && element) {
+                e.preventDefault();
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+            // If not on homepage, let the Link component handle navigation to '/'
+        }
+        setMobileMenuOpen(false);
+    };
 
     return (
         <>
@@ -56,6 +71,7 @@ export default function Navbar() {
                             <Link
                                 key={link.name}
                                 href={link.href}
+                                onClick={(e) => handleNavClick(e, link.href)}
                                 className={`text-sm font-medium transition-colors duration-200 tracking-wide ${scrolled ? 'text-white hover:text-white' : 'text-white/90 hover:text-white'}`}
                             >
                                 {link.name}
@@ -102,7 +118,7 @@ export default function Navbar() {
                                         key={link.name}
                                         href={link.href}
                                         className="text-lg font-medium text-gray-700 hover:text-brand-green transition-colors py-2 border-b border-gray-100"
-                                        onClick={() => setMobileMenuOpen(false)}
+                                        onClick={(e) => handleNavClick(e, link.href)}
                                     >
                                         {link.name}
                                     </Link>
