@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import type { ScrollStoryPoint } from '@/types/scroll';
-import QuoteModal from './ui/QuoteModal';
+import LeadFormModal from './ui/LeadFormModal';
+import type { LeadType } from './ui/LeadFormModal';
 
 const TOTAL_FRAMES = 40;
 const FRAME_PATH = '/multipleframe/ezgif-frame-';
@@ -20,11 +21,12 @@ const STORY_POINTS: ScrollStoryPoint[] = [
 
 export default function ModularColdRoomScroll() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null); // Sticky viewport — canvas must match THIS
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
     const [currentFrame, setCurrentFrame] = useState(0);
-    const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+    const [modalType, setModalType] = useState<LeadType | null>(null);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -61,69 +63,74 @@ export default function ModularColdRoomScroll() {
         preloadImages();
     }, []);
 
-    // Render frame to canvas
+    // Render frame to canvas — use VIEWPORT (sticky div) dimensions, NOT scroll container
     useEffect(() => {
-        if (!imagesLoaded || !canvasRef.current || !containerRef.current || images.length === 0) return;
+        if (!imagesLoaded || !canvasRef.current || !viewportRef.current || images.length === 0) return;
 
         const canvas = canvasRef.current;
-        const container = containerRef.current;
+        const viewport = viewportRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
+
+        const getViewportSize = () => {
+            // Prefer viewport element; fallback to window for accuracy
+            if (viewport && viewport.clientWidth > 0 && viewport.clientHeight > 0) {
+                return { w: viewport.clientWidth, h: viewport.clientHeight };
+            }
+            return { w: window.innerWidth, h: window.innerHeight };
+        };
 
         const render = () => {
             const img = images[currentFrame];
             if (!img || !img.complete) return;
 
-            // Use container dimensions instead of window
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            const dpr = window.devicePixelRatio || 1;
+            const { w: width, h: height } = getViewportSize();
+            if (width <= 0 || height <= 0) return;
 
-            canvas.width = width * dpr;
-            canvas.height = height * dpr;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            canvas.width = Math.round(width * dpr);
+            canvas.height = Math.round(height * dpr);
             canvas.style.width = `${width}px`;
             canvas.style.height = `${height}px`;
 
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
-
-            // Clear canvas
             ctx.clearRect(0, 0, width, height);
 
-            // Calculate scaling to cover the canvas (absolute fill)
-            const targetWidth = width;
-            const targetHeight = height;
-
-            const canvasAspect = targetWidth / targetHeight;
+            const targetAspect = width / height;
             const imgAspect = img.width / img.height;
+            let drawWidth: number;
+            let drawHeight: number;
+            let offsetX: number;
+            let offsetY: number;
 
-            let drawWidth, drawHeight, offsetX, offsetY;
-
-            if (canvasAspect > imgAspect) {
-                // Canvas is wider: Fit width, crop height
-                drawWidth = targetWidth;
-                drawHeight = drawWidth / imgAspect;
+            if (targetAspect > imgAspect) {
+                drawWidth = width;
+                drawHeight = width / imgAspect;
                 offsetX = 0;
-                // Center vertically
-                offsetY = (targetHeight - drawHeight) / 2;
+                offsetY = (height - drawHeight) / 2;
             } else {
-                // Canvas is taller: Fit height, crop width
-                drawHeight = targetHeight;
-                drawWidth = drawHeight * imgAspect;
-                // Center horizontally
-                offsetX = (targetWidth - drawWidth) / 2;
+                drawHeight = height;
+                drawWidth = height * imgAspect;
+                offsetX = (width - drawWidth) / 2;
                 offsetY = 0;
             }
 
-            // Draw image
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
         };
 
         render();
 
+        const ro = new ResizeObserver(render);
+        ro.observe(viewport);
         const handleResize = () => render();
         window.addEventListener('resize', handleResize);
 
-        return () => window.removeEventListener('resize', handleResize);
+        return () => {
+            ro.disconnect();
+            window.removeEventListener('resize', handleResize);
+        };
     }, [currentFrame, images, imagesLoaded]);
 
     // Update frame based on scroll
@@ -150,8 +157,11 @@ export default function ModularColdRoomScroll() {
 
     return (
         <div ref={containerRef} className="relative h-[400vh] bg-[#1E1E1E] min-h-[400vh]">
-            {/* Sticky Canvas Container */}
-            <div className="sticky top-0 h-[100dvh] min-h-[100dvh] sm:h-screen sm:min-h-screen w-full overflow-hidden">
+            {/* Sticky Viewport — exactly one viewport tall, canvas matches this */}
+            <div
+                ref={viewportRef}
+                className="sticky top-0 left-0 w-full h-[100dvh] min-h-[100dvh] max-h-[100dvh] sm:h-[100vh] sm:min-h-[100vh] sm:max-h-[100vh] overflow-hidden"
+            >
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 h-full w-full"
@@ -172,7 +182,7 @@ export default function ModularColdRoomScroll() {
                                 scrollProgress={scrollYProgress}
                                 currentFrame={currentFrame}
                                 isHero={index === 0}
-                                onRequestConsultation={() => setIsQuoteModalOpen(true)}
+                                onRequestConsultation={() => setModalType('consultation')}
                                 onViewSolutions={scrollToServices}
                             />
                         ))}
@@ -180,11 +190,13 @@ export default function ModularColdRoomScroll() {
                 )}
             </div>
 
-            <QuoteModal
-                isOpen={isQuoteModalOpen}
-                onClose={() => setIsQuoteModalOpen(false)}
-                type="quote"
-            />
+            {modalType && (
+                <LeadFormModal
+                    type={modalType}
+                    isOpen={true}
+                    onClose={() => setModalType(null)}
+                />
+            )}
         </div>
     );
 }

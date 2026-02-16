@@ -9,7 +9,7 @@ export default function ContactSection() {
         name: '',
         email: '',
         phone: '',
-        comments: ''
+        message: ''
     });
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
@@ -27,26 +27,24 @@ export default function ContactSection() {
         setMessage('');
 
         try {
-            const response = await fetch('/contact.php', {
+            const response = await fetch('/api/lead', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams(formData as any).toString()
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, leadType: 'quote' }),
             });
 
             const result = await response.json();
 
-            if (response.ok && result.status === 'success') {
+            if (response.ok && result.success) {
                 setStatus('success');
                 setMessage(result.message || 'Thank you! Your message has been sent successfully.');
-                setFormData({ name: '', email: '', phone: '', comments: '' });
+                setFormData({ name: '', email: '', phone: '', message: '' });
             } else {
                 throw new Error(result.message || 'Failed to send message');
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             setStatus('error');
-            setMessage(error.message || 'Something went wrong. Please try again later.');
+            setMessage(error instanceof Error ? error.message : 'Something went wrong. Please try again later.');
         }
     };
 
@@ -151,20 +149,21 @@ export default function ContactSection() {
                             </div>
 
                             <input
-                                type="tel"
+type="tel"
                                 name="phone"
                                 placeholder="Phone*"
                                 required
                                 value={formData.phone}
+                                minLength={10}
                                 onChange={handleChange}
                                 className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-ripple focus:ring-2 focus:ring-brand-ripple/20 outline-none transition-all placeholder:text-gray-400 text-gray-800 bg-white"
                             />
 
                             <textarea
-                                name="comments"
-                                placeholder="Comments"
+                                name="message"
+                                placeholder="Message"
                                 rows={4}
-                                value={formData.comments}
+                                value={formData.message}
                                 onChange={handleChange}
                                 className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-ripple focus:ring-2 focus:ring-brand-ripple/20 outline-none transition-all placeholder:text-gray-400 text-gray-800 bg-white resize-none"
                             ></textarea>
@@ -172,9 +171,36 @@ export default function ContactSection() {
                             <button
                                 type="submit"
                                 disabled={status === 'submitting'}
-                                className="px-8 py-3 bg-gradient-to-r from-brand-green to-brand-leaf text-white font-medium rounded-lg shadow-lg shadow-brand-green/30 hover:shadow-brand-green/50 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="px-8 py-3 bg-gradient-to-r from-brand-green to-brand-leaf text-white font-medium rounded-lg shadow-lg shadow-brand-green/30 hover:shadow-brand-green/50 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px]"
                             >
-                                {status === 'submitting' ? 'Sending...' : 'Send Your Message'}
+                                {status === 'submitting' ? (
+                                    <>
+                                        <svg
+                                            className="animate-spin h-4 w-4 text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            aria-hidden="true"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                            />
+                                        </svg>
+                                        Sending...
+                                    </>
+                                ) : (
+                                    'Send Your Message'
+                                )}
                             </button>
 
                             {/* Status Messages */}

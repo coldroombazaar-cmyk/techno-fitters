@@ -3,7 +3,8 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FaIndustry, FaTools, FaSnowflake, FaDraftingCompass, FaWarehouse } from 'react-icons/fa';
-import QuoteModal from '../ui/QuoteModal';
+import LeadFormModal from '../ui/LeadFormModal';
+import type { LeadType } from '../ui/LeadFormModal';
 
 const SERVICES = [
     {
@@ -39,7 +40,7 @@ const SERVICES = [
 ];
 
 export default function ServicesSection() {
-    const [isConsultantModalOpen, setIsConsultantModalOpen] = useState(false);
+    const [modalType, setModalType] = useState<LeadType | null>(null);
 
     return (
         <section id="services" className="py-24 bg-gray-50 relative overflow-hidden">
@@ -53,8 +54,8 @@ export default function ServicesSection() {
                         We deliver industrial-grade cold chain solutions tailored to your operational requirements.
                     </p>
                     <button
-                        onClick={() => setIsConsultantModalOpen(true)}
-                        className="inline-flex items-center gap-2 px-8 py-3 bg-brand-green hover:bg-brand-left text-white font-semibold rounded-full transition-all duration-300 shadow-lg shadow-brand-green/20 hover:shadow-brand-green/40 hover:-translate-y-1"
+                        onClick={() => setModalType('consultant')}
+                        className="inline-flex items-center gap-2 px-8 py-3 bg-brand-green hover:bg-brand-leaf text-white font-semibold rounded-full transition-all duration-300 shadow-lg shadow-brand-green/20 hover:shadow-brand-green/40 hover:-translate-y-1"
                     >
                         Get Consultant <span className="text-xl">→</span>
                     </button>
@@ -84,11 +85,13 @@ export default function ServicesSection() {
                 </div>
             </div>
 
-            <QuoteModal
-                isOpen={isConsultantModalOpen}
-                onClose={() => setIsConsultantModalOpen(false)}
-                type="consultant"
-            />
+            {modalType && (
+                <LeadFormModal
+                    type={modalType}
+                    isOpen={true}
+                    onClose={() => setModalType(null)}
+                />
+            )}
         </section>
     );
 }

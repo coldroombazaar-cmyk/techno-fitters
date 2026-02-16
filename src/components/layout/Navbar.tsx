@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX } from 'react-icons/hi';
-import QuoteModal from '../ui/QuoteModal';
+import LeadFormModal from '../ui/LeadFormModal';
+import type { LeadType } from '../ui/LeadFormModal';
 
 const NAV_LINKS = [
     { name: 'Services', href: '/#services' },
@@ -17,7 +18,7 @@ const NAV_LINKS = [
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+    const [modalType, setModalType] = useState<LeadType | null>(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -82,7 +83,7 @@ export default function Navbar() {
                     {/* CTA Button */}
                     <div className="hidden md:block">
                         <button
-                            onClick={() => setIsQuoteModalOpen(true)}
+                            onClick={() => setModalType('quote')}
                             className="btn-primary rounded-none text-sm px-6 py-2.5"
                         >
                             GET QUOTE
@@ -126,7 +127,7 @@ export default function Navbar() {
                                 <button
                                     onClick={() => {
                                         setMobileMenuOpen(false);
-                                        setIsQuoteModalOpen(true);
+                                        setModalType('quote');
                                     }}
                                     className="mt-4 btn-primary text-center w-full"
                                 >
@@ -138,11 +139,13 @@ export default function Navbar() {
                 </AnimatePresence>
             </header>
 
-            <QuoteModal
-                isOpen={isQuoteModalOpen}
-                onClose={() => setIsQuoteModalOpen(false)}
-                type="quote"
-            />
+            {modalType && (
+                <LeadFormModal
+                    type={modalType}
+                    isOpen={true}
+                    onClose={() => setModalType(null)}
+                />
+            )}
         </>
     );
 }
