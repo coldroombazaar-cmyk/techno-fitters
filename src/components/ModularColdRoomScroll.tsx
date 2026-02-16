@@ -103,27 +103,30 @@ export default function ModularColdRoomScroll() {
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Calculate scaling to contain image
-            const canvasAspect = window.innerWidth / window.innerHeight;
+            // Calculate scaling to cover the canvas (absolute fill)
+            const targetWidth = canvas.width / dpr;
+            const targetHeight = canvas.height / dpr;
+
+            const canvasAspect = targetWidth / targetHeight;
             const imgAspect = img.width / img.height;
 
             let drawWidth, drawHeight, offsetX, offsetY;
 
             if (canvasAspect > imgAspect) {
-                // Canvas is wider - fit to height
-                drawHeight = window.innerHeight;
-                drawWidth = drawHeight * imgAspect;
-                offsetX = (window.innerWidth - drawWidth) / 2;
-                offsetY = 0;
-            } else {
-                // Canvas is taller - fit to width
-                drawWidth = window.innerWidth;
+                // Canvas is wider than image aspect - fit to width, anchor to top so roof stays visible
+                drawWidth = targetWidth;
                 drawHeight = drawWidth / imgAspect;
                 offsetX = 0;
-                offsetY = (window.innerHeight - drawHeight) / 2;
+                offsetY = 0;
+            } else {
+                // Canvas is taller than image aspect - fit to height, crop width, anchor to top
+                drawHeight = targetHeight;
+                drawWidth = drawHeight * imgAspect;
+                offsetX = (targetWidth - drawWidth) / 2;
+                offsetY = 0;
             }
 
-            // Draw image centered
+            // Draw image
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
         };
 
@@ -141,7 +144,7 @@ export default function ModularColdRoomScroll() {
 
         const unsubscribe = scrollYProgress.on('change', (latest: number) => {
             const frameIndex = Math.min(
-                Math.floor(latest * TOTAL_FRAMES),
+                Math.round(latest * (TOTAL_FRAMES - 1)),
                 TOTAL_FRAMES - 1
             );
             setCurrentFrame(frameIndex);
@@ -158,11 +161,9 @@ export default function ModularColdRoomScroll() {
     };
 
     return (
-        <div ref={containerRef} className="relative h-[400vh] bg-[#1E1E1E]">
-            {/* ... (existing loading state) */}
-
+        <div ref={containerRef} className="relative h-[400vh] bg-[#1E1E1E] min-h-[400vh]">
             {/* Sticky Canvas Container */}
-            <div className="sticky top-0 h-screen w-full overflow-hidden">
+            <div className="sticky top-0 h-[100dvh] min-h-[100dvh] sm:h-screen sm:min-h-screen w-full overflow-hidden">
                 <canvas
                     ref={canvasRef}
                     className="absolute inset-0 h-full w-full"
@@ -181,6 +182,7 @@ export default function ModularColdRoomScroll() {
                                 key={index}
                                 point={point}
                                 scrollProgress={scrollYProgress}
+                                currentFrame={currentFrame}
                                 isHero={index === 0}
                                 onRequestConsultation={() => setIsQuoteModalOpen(true)}
                                 onViewSolutions={scrollToServices}
@@ -203,62 +205,96 @@ export default function ModularColdRoomScroll() {
 function StoryOverlay({
     point,
     scrollProgress,
+    currentFrame,
     isHero = false,
     onRequestConsultation,
     onViewSolutions,
 }: {
     point: ScrollStoryPoint;
     scrollProgress: any;
+    currentFrame: number;
     isHero?: boolean;
     onRequestConsultation?: () => void;
     onViewSolutions?: () => void;
 }) {
-    const fadeInStart = Math.max(0, point.progress - 0.1);
-    const fadeOutEnd = Math.min(1, point.progress + 0.15);
+    // Each story point: fade in as we approach, stay visible at peak, fade out as we scroll past
+    const fadeInStart = Math.max(0, point.progress - 0.12);
+    const pointPeak = point.progress;
+    const fadeOutStart = point.progress + 0.06;
+    const fadeOutEnd = Math.min(1, point.progress + 0.14);
 
     const opacity = useTransform(
         scrollProgress,
-        [fadeInStart, point.progress, point.progress + 0.05, fadeOutEnd],
+        [fadeInStart, pointPeak, fadeOutStart, fadeOutEnd],
         [0, 1, 1, 0]
     );
 
     const y = useTransform(
         scrollProgress,
-        [fadeInStart, point.progress],
-        [20, 0]
+        [fadeInStart, pointPeak],
+        [16, 0]
     );
 
+    // Track interactability based on opacity to prevent underlying overlays from blocking clicks
+    const [isInteractable, setIsInteractable] = useState(isHero);
+
+    useEffect(() => {
+        // For the hero section, we want it to be interactable immediately
+        if (isHero) {
+            setIsInteractable(true);
+            return;
+        }
+
+        const unsubscribe = opacity.on('change', (v: number) => {
+            const visible = v > 0.5;
+            if (visible !== isInteractable) {
+                setIsInteractable(visible);
+            }
+        });
+        return () => unsubscribe();
+    }, [opacity, isInteractable, isHero]);
+
     const alignmentClasses = {
-        left: 'items-start text-left pl-8 md:pl-16 lg:pl-32',
-        center: 'items-center text-center px-4',
-        right: 'items-end text-right pr-8 md:pr-16 lg:pr-32',
+        left: 'items-start text-left pl-4 sm:pl-8 md:pl-16 lg:pl-32 pr-4',
+        center: 'items-center text-center px-4 sm:px-6',
+        right: 'items-end text-right pr-4 sm:pr-8 md:pr-16 lg:pr-32 pl-4',
     };
 
     return (
         <motion.div
-            style={{ opacity, y }}
-            className={`absolute inset-0 flex flex-col justify-center ${alignmentClasses[point.align]} pointer-events-auto`}
+            style={{
+                opacity,
+                y,
+                pointerEvents: isInteractable ? 'auto' : 'none',
+            }}
+            className={`absolute inset-0 flex flex-col justify-center ${alignmentClasses[point.align]} ${isInteractable ? 'z-40' : 'z-0'} pointer-events-none`}
         >
-            <div className={`max-w-4xl ${isHero ? 'mt-0' : 'mt-20'}`}>
-                <h2 className={`${isHero ? 'text-5xl md:text-7xl font-medium' : 'text-4xl md:text-5xl font-light'} tracking-tight text-white mb-6 leading-tight`}>
+            <div className={`max-w-4xl w-full ${isHero ? 'mt-0' : 'mt-8 sm:mt-12 md:mt-20'}`}>
+                <h2 className={`${isHero ? 'text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-medium' : 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light'} tracking-tight text-white mb-4 sm:mb-6 leading-tight`}>
                     {point.headline}
                 </h2>
                 {point.subtext && (
-                    <p className={`${isHero ? 'text-xl md:text-2xl text-white/80' : 'text-lg md:text-xl text-white/60'} font-light tracking-wide max-w-2xl mx-auto mb-10`}>
+                    <p className={`${isHero ? 'text-base sm:text-lg md:text-xl lg:text-2xl text-white/80' : 'text-sm sm:text-base md:text-lg lg:text-xl text-white/60'} font-light tracking-wide max-w-2xl mb-6 sm:mb-10 ${point.align === 'center' ? 'mx-auto' : point.align === 'right' ? 'ml-auto mr-0' : 'mr-auto ml-0'}`}>
                         {point.subtext}
                     </p>
                 )}
                 {point.cta && isHero && (
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2">
                         <button
-                            onClick={onRequestConsultation}
-                            className="rounded-none bg-brand-green px-8 py-3 text-sm font-medium tracking-widest text-white transition-all duration-300 hover:bg-brand-green/90 shadow-lg shadow-brand-green/20"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onRequestConsultation?.();
+                            }}
+                            className="z-50 rounded-none bg-brand-green px-5 py-2.5 sm:px-8 sm:py-3 text-xs sm:text-sm font-medium tracking-widest text-white transition-all duration-300 hover:bg-brand-green/90 shadow-lg shadow-brand-green/20 pointer-events-auto min-h-[44px] sm:min-h-0"
                         >
                             REQUEST CONSULTATION
                         </button>
                         <button
-                            onClick={onViewSolutions}
-                            className="rounded-none border border-white/20 bg-white/5 px-8 py-3 text-sm font-medium tracking-widest text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onViewSolutions?.();
+                            }}
+                            className="z-50 rounded-none border border-white/20 bg-white/5 px-5 py-2.5 sm:px-8 sm:py-3 text-xs sm:text-sm font-medium tracking-widest text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/40 pointer-events-auto min-h-[44px] sm:min-h-0"
                         >
                             VIEW SOLUTIONS
                         </button>

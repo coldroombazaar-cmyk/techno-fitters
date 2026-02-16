@@ -170,7 +170,7 @@ export default function ContactSection() {
                             <button
                                 type="submit"
                                 disabled={status === 'submitting'}
-                                className="px-8 py-3 bg-gradient-to-r from-brand-ripple to-blue-700 text-white font-medium rounded-lg shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="px-8 py-3 bg-gradient-to-r from-brand-green to-brand-leaf text-white font-medium rounded-lg shadow-lg shadow-brand-green/30 hover:shadow-brand-green/50 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
                             >
                                 {status === 'submitting' ? 'Sending...' : 'Send Your Message'}
                             </button>
