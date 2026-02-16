@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaPhoneAlt, FaCheckCircle } from 'react-icons/fa';
 import confetti from 'canvas-confetti';
 
+// ... (imports remain same)
+
 interface QuoteModalProps {
     isOpen: boolean;
     onClose: () => void;
-    type?: 'quote' | 'consultant'; // 'quote' shows form, 'consultant' shows phone + form
+    type?: 'quote' | 'consultant';
 }
 
 export default function QuoteModal({ isOpen, onClose, type = 'quote' }: QuoteModalProps) {
@@ -31,16 +33,11 @@ export default function QuoteModal({ isOpen, onClose, type = 'quote' }: QuoteMod
         const duration = 3000;
         const animationEnd = Date.now() + duration;
         const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
-
         const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
 
         const interval: any = setInterval(function () {
             const timeLeft = animationEnd - Date.now();
-
-            if (timeLeft <= 0) {
-                return clearInterval(interval);
-            }
-
+            if (timeLeft <= 0) return clearInterval(interval);
             const particleCount = 50 * (timeLeft / duration);
             confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
             confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
@@ -50,22 +47,16 @@ export default function QuoteModal({ isOpen, onClose, type = 'quote' }: QuoteMod
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('submitting');
-
         try {
             const response = await fetch('/contact.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams(formData as any).toString()
             });
-
             const result = await response.json();
-
             if (result.status === 'success') {
                 setStatus('success');
                 triggerConfetti();
-                // Reset form after delay
                 setTimeout(() => {
                     onClose();
                     setStatus('idle');
@@ -82,139 +73,135 @@ export default function QuoteModal({ isOpen, onClose, type = 'quote' }: QuoteMod
     return (
         <AnimatePresence>
             {isOpen && (
-                <>
-                    {/* Backdrop */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={onClose}
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                >
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                        className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative flex flex-col max-h-[90vh]"
                     >
-                        {/* Modal Container */}
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-                            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative"
+                        <button
+                            onClick={onClose}
+                            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors z-10 p-1 bg-white/50 rounded-full"
                         >
-                            {/* Close Button */}
-                            <button
-                                onClick={onClose}
-                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
-                            >
-                                <FaTimes size={20} />
-                            </button>
+                            <FaTimes size={16} />
+                        </button>
 
-                            {/* Logic for Consultant Type */}
-                            {type === 'consultant' && status !== 'success' && (
-                                <div className="bg-brand-ripple/10 p-6 text-center border-b border-brand-ripple/20">
-                                    <div className="w-16 h-16 bg-brand-green/10 text-brand-green rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <FaPhoneAlt size={24} />
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-1">Direct Consultation</h3>
-                                    <p className="text-gray-600 mb-3">Call our expert consultant right now:</p>
-                                    <a href="tel:+917860000929" className="text-2xl font-bold text-brand-green hover:underline">
+                        {/* Always show Compact Consultant Info Header */}
+                        {status !== 'success' && (
+                            <div className="bg-brand-green/5 px-6 py-4 flex items-center gap-4 border-b border-brand-green/10">
+                                <div className="w-10 h-10 bg-brand-green/10 text-brand-green rounded-full flex items-center justify-center flex-shrink-0">
+                                    <FaPhoneAlt size={16} />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Direct Consultation</p>
+                                    <a href="tel:+917860000929" className="text-lg font-bold text-gray-900 hover:text-brand-green transition-colors">
                                         +91 786-0000-929
                                     </a>
                                 </div>
-                            )}
+                            </div>
+                        )}
 
-                            <div className="p-8">
-                                {status === 'success' ? (
-                                    <div className="text-center py-10">
-                                        <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <FaCheckCircle size={40} />
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You! 🎉</h3>
-                                        <p className="text-gray-600">
-                                            We&apos;ve received your request. Let&apos;s celebrate this new beginning!
-                                            Our team will contact you shortly.
+                        <div className="p-6 overflow-y-auto">
+                            {status === 'success' ? (
+                                <motion.div
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    className="text-center py-8"
+                                >
+                                    <motion.div
+                                        animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.1, 1] }}
+                                        transition={{ duration: 0.5, delay: 0.2 }}
+                                        className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-green-200"
+                                    >
+                                        <FaCheckCircle size={36} />
+                                    </motion.div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You Message 🎊🎉</h3>
+                                    <p className="text-gray-600 text-sm leading-relaxed px-4">
+                                        We have received your details. Our team will contact you shortly!
+                                    </p>
+                                    <button onClick={onClose} className="mt-8 text-sm text-brand-green font-medium hover:underline">Close</button>
+                                </motion.div>
+                            ) : (
+                                <>
+                                    <div className="mb-4">
+                                        <h2 className="text-xl font-bold text-gray-900">Get your Free Quote</h2>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Fill out this form and we'll connect within 24 hours.
                                         </p>
                                     </div>
-                                ) : (
-                                    <>
-                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                                            {type === 'quote' ? 'Get a Free Quote' : 'Request Callback'}
-                                        </h2>
-                                        <p className="text-gray-500 mb-6">
-                                            Fill out the form below and we&apos;ll get back to you within 24 hours.
-                                        </p>
 
-                                        <form onSubmit={handleSubmit} className="space-y-4">
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    required
-                                                    value={formData.name}
-                                                    onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green focus:border-transparent outline-none transition-all"
-                                                    placeholder="John Doe"
-                                                />
-                                            </div>
+                                    <form onSubmit={handleSubmit} className="space-y-3">
+                                        <div>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                required
+                                                value={formData.name}
+                                                onChange={handleChange}
+                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none"
+                                                placeholder="Full Name"
+                                            />
+                                        </div>
 
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                                    <input
-                                                        type="email"
-                                                        name="email"
-                                                        required
-                                                        value={formData.email}
-                                                        onChange={handleChange}
-                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green focus:border-transparent outline-none transition-all"
-                                                        placeholder="john@example.com"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                                    <input
-                                                        type="tel"
-                                                        name="phone"
-                                                        required
-                                                        value={formData.phone}
-                                                        onChange={handleChange}
-                                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green focus:border-transparent outline-none transition-all"
-                                                        placeholder="+91 987..."
-                                                    />
-                                                </div>
-                                            </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                required
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none"
+                                                placeholder="Email Address"
+                                            />
+                                            <input
+                                                type="tel"
+                                                name="phone"
+                                                required
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none"
+                                                placeholder="Phone Number"
+                                            />
+                                        </div>
 
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-1">Project Details</label>
-                                                <textarea
-                                                    name="comments"
-                                                    rows={3}
-                                                    value={formData.comments}
-                                                    onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-green focus:border-transparent outline-none transition-all"
-                                                    placeholder="Tell us about your requirements..."
-                                                ></textarea>
-                                            </div>
+                                        <div>
+                                            <textarea
+                                                name="comments"
+                                                rows={2}
+                                                value={formData.comments}
+                                                onChange={handleChange}
+                                                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none resize-none"
+                                                placeholder="Brief project details..."
+                                            ></textarea>
+                                        </div>
 
-                                            <button
-                                                type="submit"
-                                                disabled={status === 'submitting'}
-                                                className="w-full bg-brand-green hover:bg-brand-leaf text-white font-semibold py-3 rounded-lg transition-colors duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
-                                            >
-                                                {status === 'submitting' ? 'Sending...' : 'Submit Request'}
-                                            </button>
+                                        <button
+                                            type="submit"
+                                            disabled={status === 'submitting'}
+                                            className="w-full bg-brand-green hover:bg-brand-leaf text-white font-bold py-2.5 rounded-lg text-sm transition-all duration-300 shadow-md shadow-brand-green/20 disabled:opacity-70 uppercase tracking-widest"
+                                        >
+                                            {status === 'submitting' ? 'Sending...' : 'Get Free Quote'}
+                                        </button>
 
-                                            {status === 'error' && (
-                                                <p className="text-red-500 text-sm text-center">
-                                                    Something went wrong. Please try again.
-                                                </p>
-                                            )}
-                                        </form>
-                                    </>
-                                )}
-                            </div>
-                        </motion.div>
+                                        {status === 'error' && (
+                                            <p className="text-red-500 text-xs text-center mt-2">
+                                                Something went wrong. Please try again.
+                                            </p>
+                                        )}
+                                    </form>
+                                </>
+                            )}
+                        </div>
                     </motion.div>
-                </>
+                </motion.div>
             )}
         </AnimatePresence>
     );

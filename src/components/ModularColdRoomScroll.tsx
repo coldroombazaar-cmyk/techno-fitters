@@ -63,9 +63,10 @@ export default function ModularColdRoomScroll() {
 
     // Render frame to canvas
     useEffect(() => {
-        if (!imagesLoaded || !canvasRef.current || images.length === 0) return;
+        if (!imagesLoaded || !canvasRef.current || !containerRef.current || images.length === 0) return;
 
         const canvas = canvasRef.current;
+        const container = containerRef.current;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
@@ -73,21 +74,24 @@ export default function ModularColdRoomScroll() {
             const img = images[currentFrame];
             if (!img || !img.complete) return;
 
-            // Set canvas size to match window
+            // Use container dimensions instead of window
+            const width = container.clientWidth;
+            const height = container.clientHeight;
             const dpr = window.devicePixelRatio || 1;
-            canvas.width = window.innerWidth * dpr;
-            canvas.height = window.innerHeight * dpr;
-            canvas.style.width = `${window.innerWidth}px`;
-            canvas.style.height = `${window.innerHeight}px`;
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
 
             ctx.scale(dpr, dpr);
 
             // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, width, height);
 
             // Calculate scaling to cover the canvas (absolute fill)
-            const targetWidth = canvas.width / dpr;
-            const targetHeight = canvas.height / dpr;
+            const targetWidth = width;
+            const targetHeight = height;
 
             const canvasAspect = targetWidth / targetHeight;
             const imgAspect = img.width / img.height;
@@ -95,15 +99,17 @@ export default function ModularColdRoomScroll() {
             let drawWidth, drawHeight, offsetX, offsetY;
 
             if (canvasAspect > imgAspect) {
-                // Canvas is wider than image aspect - fit to width, anchor to top so roof stays visible
+                // Canvas is wider: Fit width, crop height
                 drawWidth = targetWidth;
                 drawHeight = drawWidth / imgAspect;
                 offsetX = 0;
-                offsetY = 0;
+                // Center vertically
+                offsetY = (targetHeight - drawHeight) / 2;
             } else {
-                // Canvas is taller than image aspect - fit to height, crop width, anchor to top
+                // Canvas is taller: Fit height, crop width
                 drawHeight = targetHeight;
                 drawWidth = drawHeight * imgAspect;
+                // Center horizontally
                 offsetX = (targetWidth - drawWidth) / 2;
                 offsetY = 0;
             }

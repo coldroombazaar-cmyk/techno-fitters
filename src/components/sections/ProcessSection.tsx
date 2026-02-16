@@ -44,7 +44,7 @@ export default function ProcessSection() {
     const mobileLineHeight = useTransform(mobileProgress, (v) => `${v * 100}%`);
 
     return (
-        <section id="process" className="pt-16 md:pt-10 pb-8 md:pb-6 bg-gradient-to-b from-gray-50 to-white">
+        <section id="process" className="pt-12 md:pt-8 pb-4 md:pb-2 bg-gradient-to-b from-gray-50 to-white">
             <div ref={containerRef} className="md:relative md:h-[105vh]">
                 <div className="container mx-auto px-6 md:sticky md:top-0 md:h-screen md:flex md:flex-col md:justify-center">
                     <div className="text-center mb-8 md:mb-6">
