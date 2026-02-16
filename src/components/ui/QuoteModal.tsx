@@ -54,8 +54,10 @@ export default function QuoteModal({ isOpen, onClose, type = 'quote' }: QuoteMod
         try {
             const response = await fetch('/contact.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(formData as any).toString()
             });
 
             const result = await response.json();

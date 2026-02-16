@@ -16,18 +16,6 @@ const STORY_POINTS: ScrollStoryPoint[] = [
         align: 'center',
         cta: true,
     },
-    {
-        progress: 0.3,
-        headline: 'Modular Architecture',
-        subtext: 'Built for controlled environments with varied temperature zones.',
-        align: 'left',
-    },
-    {
-        progress: 0.6,
-        headline: 'Thermal Integrity',
-        subtext: 'High-density PUF panels designed for zero thermal leakage.',
-        align: 'right',
-    },
 ];
 
 export default function ModularColdRoomScroll() {

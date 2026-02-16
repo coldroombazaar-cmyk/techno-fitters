@@ -35,16 +35,18 @@ export default function ContactSection() {
                 body: new URLSearchParams(formData as any).toString()
             });
 
-            if (response.ok) {
+            const result = await response.json();
+
+            if (response.ok && result.status === 'success') {
                 setStatus('success');
-                setMessage('Thank you! Your message has been sent successfully.');
+                setMessage(result.message || 'Thank you! Your message has been sent successfully.');
                 setFormData({ name: '', email: '', phone: '', comments: '' });
             } else {
-                throw new Error('Failed to send message');
+                throw new Error(result.message || 'Failed to send message');
             }
-        } catch (error) {
+        } catch (error: any) {
             setStatus('error');
-            setMessage('Something went wrong. Please try again later.');
+            setMessage(error.message || 'Something went wrong. Please try again later.');
         }
     };
 
