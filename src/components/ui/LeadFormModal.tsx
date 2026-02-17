@@ -68,15 +68,22 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
     const payload = { ...formData, leadType: type };
 
     try {
-      const res = await fetch('/api/lead', {
+      const res = await fetch('https://formsubmit.co/ajax/coldroombazaar@gmail.com', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...payload,
+          _subject: `New ${config.title} Request from ${formData.name}`,
+          _template: 'table'
+        }),
       });
 
       const result = await res.json();
 
-      if (res.ok && result.success) {
+      if (res.ok) {
         setStatus('success');
         setFormData({ name: '', email: '', phone: '', message: '' });
       } else {

@@ -27,17 +27,25 @@ export default function ContactSection() {
         setMessage('');
 
         try {
-            const response = await fetch('/api/lead', {
+            const response = await fetch('https://formsubmit.co/ajax/coldroombazaar@gmail.com', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, leadType: 'quote' }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    leadType: 'contact_form',
+                    _subject: `New Contact Message from ${formData.name}`,
+                    _template: 'table'
+                }),
             });
 
             const result = await response.json();
 
-            if (response.ok && result.success) {
+            if (response.ok) {
                 setStatus('success');
-                setMessage(result.message || 'Thank you! Your message has been sent successfully.');
+                setMessage('Thank you! Your message has been sent successfully.');
                 setFormData({ name: '', email: '', phone: '', message: '' });
             } else {
                 throw new Error(result.message || 'Failed to send message');
