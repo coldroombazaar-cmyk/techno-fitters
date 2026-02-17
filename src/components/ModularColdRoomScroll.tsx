@@ -21,7 +21,7 @@ const STORY_POINTS: ScrollStoryPoint[] = [
 
 export default function ModularColdRoomScroll() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const viewportRef = useRef<HTMLDivElement>(null); // Sticky viewport — canvas must match THIS
+    const viewportRef = useRef<HTMLDivElement>(null); // Sticky viewport - use for canvas size
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -42,7 +42,7 @@ export default function ModularColdRoomScroll() {
             for (let i = 1; i <= TOTAL_FRAMES; i++) {
                 const img = new Image();
                 const frameNumber = i.toString().padStart(3, '0');
-                img.src = `${FRAME_PATH}${frameNumber}.jpg`;
+                img.src = `${FRAME_PATH}${frameNumber}.png`;
 
                 img.onload = () => {
                     loadedCount++;
@@ -63,28 +63,22 @@ export default function ModularColdRoomScroll() {
         preloadImages();
     }, []);
 
-    // Render frame to canvas — use VIEWPORT (sticky div) dimensions, NOT scroll container
+    // Render frame to canvas — use VIEWPORT ref (sticky div), NOT container (400vh)
     useEffect(() => {
-        if (!imagesLoaded || !canvasRef.current || !viewportRef.current || images.length === 0) return;
-
-        const canvas = canvasRef.current;
         const viewport = viewportRef.current;
+        const canvas = canvasRef.current;
+        if (!imagesLoaded || !canvas || !viewport || images.length === 0) return;
+
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
-
-        const getViewportSize = () => {
-            // Prefer viewport element; fallback to window for accuracy
-            if (viewport && viewport.clientWidth > 0 && viewport.clientHeight > 0) {
-                return { w: viewport.clientWidth, h: viewport.clientHeight };
-            }
-            return { w: window.innerWidth, h: window.innerHeight };
-        };
 
         const render = () => {
             const img = images[currentFrame];
             if (!img || !img.complete) return;
 
-            const { w: width, h: height } = getViewportSize();
+            // Use viewport (sticky) dimensions = visible screen, not 400vh container
+            const width = viewport.clientWidth;
+            const height = viewport.clientHeight;
             if (width <= 0 || height <= 0) return;
 
             const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -100,22 +94,23 @@ export default function ModularColdRoomScroll() {
 
             const targetAspect = width / height;
             const imgAspect = img.width / img.height;
-            let drawWidth: number;
-            let drawHeight: number;
-            let offsetX: number;
-            let offsetY: number;
+            let drawWidth: number, drawHeight: number, offsetX: number, offsetY: number;
 
-            if (targetAspect > imgAspect) {
-                drawWidth = width;
-                drawHeight = width / imgAspect;
-                offsetX = 0;
-                offsetY = (height - drawHeight) / 2;
-            } else {
-                drawHeight = height;
-                drawWidth = height * imgAspect;
-                offsetX = (width - drawWidth) / 2;
-                offsetY = 0;
-            }
+            // Responsive scaling logic
+            // Responsive scaling logic
+            const isMobile = width < 768; // Mobile breakpoint
+
+            // Mobile: Scale up (1.35x) from "fit width" to make the cold room bigger and more prominent,
+            // accepting slight side cropping to avoid it looking too small/letterboxed.
+            // Desktop: Cover for full immersion.
+            const scale = isMobile
+                ? (width / img.width) * 1.90
+                : Math.max(width / img.width, height / img.height);
+
+            drawWidth = img.width * scale;
+            drawHeight = img.height * scale;
+            offsetX = (width - drawWidth) / 2;
+            offsetY = (height - drawHeight) / 2;
 
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
         };
@@ -124,12 +119,11 @@ export default function ModularColdRoomScroll() {
 
         const ro = new ResizeObserver(render);
         ro.observe(viewport);
-        const handleResize = () => render();
-        window.addEventListener('resize', handleResize);
+        window.addEventListener('resize', render);
 
         return () => {
             ro.disconnect();
-            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', render);
         };
     }, [currentFrame, images, imagesLoaded]);
 
@@ -156,11 +150,11 @@ export default function ModularColdRoomScroll() {
     };
 
     return (
-        <div ref={containerRef} className="relative h-[400vh] bg-[#1E1E1E] min-h-[400vh]">
-            {/* Sticky Viewport — exactly one viewport tall, canvas matches this */}
+        <div ref={containerRef} className="relative h-[300vh] sm:h-[500vh] bg-gradient-to-b from-[#637278] to-[#c8d1d2]">
+            {/* Sticky Canvas Container — viewport-sized for correct canvas dimensions on all devices */}
             <div
                 ref={viewportRef}
-                className="sticky top-0 left-0 w-full h-[100dvh] min-h-[100dvh] max-h-[100dvh] sm:h-[100vh] sm:min-h-[100vh] sm:max-h-[100vh] overflow-hidden"
+                className="sticky top-0 left-0 right-0 w-full h-screen h-[100dvh] overflow-hidden"
             >
                 <canvas
                     ref={canvasRef}
@@ -169,8 +163,12 @@ export default function ModularColdRoomScroll() {
                 />
 
                 {/* Gradient Overlay for Professional Look */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,#000000_100%)] opacity-90 pointer-events-none mix-blend-multiply" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1E1E] via-transparent to-[#1E1E1E]/50 pointer-events-none" />
+                {/* Reduced radial opacity for better visibility on mobile */}
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,#637278_100%)] opacity-80 pointer-events-none mix-blend-multiply" />
+
+                {/* Top and Bottom Gradients matched to new background */}
+                <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#637278]/90 to-transparent pointer-events-none z-10" />
+                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#c8d1d2] via-[#c8d1d2]/60 to-transparent pointer-events-none z-10" />
 
                 {/* Story Overlays */}
                 {imagesLoaded && (
@@ -192,7 +190,7 @@ export default function ModularColdRoomScroll() {
 
             {modalType && (
                 <LeadFormModal
-                    type={modalType}
+                    type={modalType as LeadType}
                     isOpen={true}
                     onClose={() => setModalType(null)}
                 />
