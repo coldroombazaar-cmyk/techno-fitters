@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaPhoneAlt } from 'react-icons/fa';
+import { FaTimes, FaPhoneAlt, FaCalendarCheck } from 'react-icons/fa';
 import SuccessPopup from './SuccessPopup';
 
 const FORM_CONFIG = {
@@ -10,16 +10,19 @@ const FORM_CONFIG = {
     title: 'Get Your Free Quote',
     buttonText: 'GET FREE QUOTE',
     subtext: "Fill out this form and we'll connect within 24 hours.",
+    theme: 'orange', // To differentiate styles if needed
   },
   consultation: {
     title: 'Request Consultation',
     buttonText: 'REQUEST CONSULTATION',
     subtext: "Share your requirements and we'll schedule a call.",
+    theme: 'blue',
   },
   consultant: {
     title: 'Get Expert Consultant',
     buttonText: 'GET CONSULTANT',
     subtext: "Our expert will reach out to discuss your project.",
+    theme: 'purple',
   },
 } as const;
 
@@ -38,6 +41,16 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const config = FORM_CONFIG[type];
+
+  // Dynamic Styles based on Modal Type
+  const isConsultation = type === 'consultation';
+  const headerBg = isConsultation ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100';
+  const iconBg = isConsultation ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-500';
+  const buttonGradient = isConsultation
+    ? 'from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-blue-500/20'
+    : 'from-[#FF9966] to-[#FF5E62] hover:from-[#FF8855] hover:to-[#FF4444] shadow-orange-500/20';
+  const focusRing = isConsultation ? 'focus:ring-blue-500 focus:border-blue-500' : 'focus:ring-orange-500 focus:border-orange-500';
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -92,53 +105,54 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={handleClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden relative flex flex-col max-h-[90vh]"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative flex flex-col max-h-[90vh]"
           >
-            <button
-              onClick={handleClose}
-              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors z-10 p-1 bg-white/50 rounded-full"
-              aria-label="Close"
-            >
-              <FaTimes size={16} />
-            </button>
 
-            {status !== 'success' && (
-              <div className="bg-brand-green/5 px-6 py-4 flex items-center gap-4 border-b border-brand-green/10">
-                <div className="w-10 h-10 bg-brand-green/10 text-brand-green rounded-full flex items-center justify-center flex-shrink-0">
-                  <FaPhoneAlt size={16} />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-                    Direct Consultation
-                  </p>
-                  <a
-                    href="tel:+917860000929"
-                    className="text-lg font-bold text-gray-900 hover:text-brand-green transition-colors"
-                  >
-                    +91 786-0000-929
-                  </a>
-                </div>
+            {/* Header Section */}
+            <div className={`${headerBg} px-8 py-6 flex items-center gap-4 border-b relative transition-colors duration-300`}>
+              <button
+                onClick={handleClose}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                aria-label="Close"
+              >
+                <FaTimes size={14} />
+              </button>
+
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-xl ${iconBg}`}>
+                {isConsultation ? <FaCalendarCheck /> : <FaPhoneAlt />}
               </div>
-            )}
+              <div>
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-0.5">
+                  {isConsultation ? 'Book a Session' : 'Direct Consultation'}
+                </p>
+                <a
+                  href="tel:+917860000929"
+                  className={`text-xl font-bold text-gray-900 transition-colors block leading-none ${isConsultation ? 'hover:text-blue-600' : 'hover:text-orange-500'}`}
+                >
+                  +91 786-0000-929
+                </a>
+              </div>
+            </div>
 
-            <div className="p-6 overflow-y-auto">
+            <div className="p-8 overflow-y-auto">
               {status === 'success' ? (
                 <SuccessPopup leadType={type} onClose={handleClose} autoCloseMs={3000} />
               ) : (
                 <>
-                  <div className="mb-4">
-                    <h2 className="text-xl font-bold text-gray-900">{config.title}</h2>
-                    <p className="text-xs text-gray-500 mt-1">{config.subtext}</p>
+                  <div className="mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{config.title}</h2>
+                    <p className="text-sm text-gray-500">{config.subtext}</p>
                   </div>
 
-                  <form onSubmit={handleSubmit} className="space-y-3">
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Full Name */}
                     <div>
                       <input
                         type="text"
@@ -146,17 +160,17 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none ${
-                          fieldErrors.name ? 'border-red-400' : 'border-gray-200'
-                        }`}
-                        placeholder="Full Name"
+                        className={`w-full px-4 py-3 text-sm border bg-gray-50 text-black rounded-lg outline-none transition-all ${focusRing} ${fieldErrors.name ? 'border-red-400' : 'border-gray-200 focus:bg-white'
+                          }`}
+                        placeholder="Name"
                       />
                       {fieldErrors.name && (
                         <p className="text-red-500 text-xs mt-1">{fieldErrors.name}</p>
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* Email and Phone */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <input
                           type="email"
@@ -164,10 +178,9 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
                           required
                           value={formData.email}
                           onChange={handleChange}
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none ${
-                            fieldErrors.email ? 'border-red-400' : 'border-gray-200'
-                          }`}
-                          placeholder="Email Address"
+                          className={`w-full px-4 py-3 text-sm border bg-gray-50 text-black rounded-lg outline-none transition-all ${focusRing} ${fieldErrors.email ? 'border-red-400' : 'border-gray-200 focus:bg-white'
+                            }`}
+                          placeholder="Email"
                         />
                         {fieldErrors.email && (
                           <p className="text-red-500 text-xs mt-1">{fieldErrors.email}</p>
@@ -180,10 +193,9 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
                           required
                           value={formData.phone}
                           onChange={handleChange}
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none ${
-                            fieldErrors.phone ? 'border-red-400' : 'border-gray-200'
-                          }`}
-                          placeholder="Phone Number"
+                          className={`w-full px-4 py-3 text-sm border bg-gray-50 text-black rounded-lg outline-none transition-all ${focusRing} ${fieldErrors.phone ? 'border-red-400' : 'border-gray-200 focus:bg-white'
+                            }`}
+                          placeholder="Phone"
                         />
                         {fieldErrors.phone && (
                           <p className="text-red-500 text-xs mt-1">{fieldErrors.phone}</p>
@@ -191,27 +203,28 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
                       </div>
                     </div>
 
+                    {/* Message */}
                     <div>
                       <textarea
                         name="message"
-                        rows={3}
+                        rows={4}
                         required
                         value={formData.message}
                         onChange={handleChange}
-                        className={`w-full px-3 py-2 text-sm border rounded-lg focus:ring-1 focus:ring-brand-green focus:border-brand-green outline-none resize-none ${
-                          fieldErrors.message ? 'border-red-400' : 'border-gray-200'
-                        }`}
-                        placeholder="Brief project details or message..."
+                        className={`w-full px-4 py-3 text-sm border bg-gray-50 text-black rounded-lg outline-none resize-none transition-all ${focusRing} ${fieldErrors.message ? 'border-red-400' : 'border-gray-200 focus:bg-white'
+                          }`}
+                        placeholder="How can we help you?"
                       />
                       {fieldErrors.message && (
                         <p className="text-red-500 text-xs mt-1">{fieldErrors.message}</p>
                       )}
                     </div>
 
+                    {/* Submit Button */}
                     <button
                       type="submit"
                       disabled={status === 'submitting'}
-                      className="w-full bg-brand-green hover:bg-brand-leaf text-white font-bold py-2.5 rounded-lg text-sm transition-all duration-300 shadow-md shadow-brand-green/20 disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-widest flex items-center justify-center gap-2 min-h-[44px]"
+                      className={`w-full bg-gradient-to-r text-white font-bold py-4 rounded-lg text-sm transition-all duration-300 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-widest flex items-center justify-center gap-2 mt-2 ${buttonGradient}`}
                     >
                       {status === 'submitting' ? (
                         <>
@@ -236,7 +249,7 @@ export default function LeadFormModal({ type, isOpen, onClose }: LeadFormModalPr
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                             />
                           </svg>
-                          Sending...
+                          Process Request...
                         </>
                       ) : (
                         config.buttonText

@@ -168,7 +168,7 @@ export default function ModularColdRoomScroll() {
 
                 {/* Top and Bottom Gradients matched to new background */}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-[#637278]/90 to-transparent pointer-events-none z-10" />
-                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#c8d1d2] via-[#c8d1d2]/60 to-transparent pointer-events-none z-10" />
+                <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0D0B1A] via-[#0D0B1A]/80 to-transparent pointer-events-none z-10" />
 
                 {/* Story Overlays */}
                 {imagesLoaded && (

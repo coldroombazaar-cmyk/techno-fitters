@@ -58,7 +58,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="smooth-scroll">
-      <body className="antialiased bg-background text-foreground selection:bg-brand-green selection:text-white">
+      <body suppressHydrationWarning className="antialiased bg-background text-foreground selection:bg-brand-green selection:text-white">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 
 const BRANDS = [
     {
@@ -26,16 +25,22 @@ const BRANDS = [
 
 export default function BrandsSection() {
     return (
-        <section className="py-20 bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
-            <div className="container mx-auto px-6 text-center">
+        <section className="section-padding bg-[#0D0B1A] relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#000000] pointer-events-none" />
+
+            <div className="container mx-auto px-6 md:px-12 lg:px-24 text-center relative z-10">
+                <span className="flex items-center justify-center gap-2 text-orange-500 font-bold tracking-widest text-sm uppercase mb-4">
+                    <span className="w-2 h-2 rounded-full bg-orange-500" />
+                    Trusted Partners
+                </span>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     className="mb-16"
                 >
-                    <h2 className="text-3xl md:text-5xl font-semibold text-gray-900 mb-4">Our Brands</h2>
-                    <p className="text-gray-500 text-lg">Trusted partners in the cold storage industry</p>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Our Brands</h2>
+                    <p className="text-gray-400 text-lg">Trusted partners in the cold storage industry</p>
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -47,12 +52,14 @@ export default function BrandsSection() {
                             rel="noopener noreferrer"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+                            whileHover={{ y: -5 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 flex flex-col items-center justify-center gap-6 group hover:border-brand-green/20 transition-all duration-300"
+                            className="bg-white/5 rounded-2xl p-8 border border-gray-800 flex flex-col items-center justify-center gap-6 group hover:border-orange-500/50 hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
                         >
-                            <div className="relative w-48 h-32 flex items-center justify-center overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                            <div className="relative w-48 h-32 flex items-center justify-center bg-white rounded-xl p-4">
                                 <img
                                     src={brand.logo}
                                     alt={`${brand.name} Logo`}
@@ -60,11 +67,10 @@ export default function BrandsSection() {
                                 />
                             </div>
 
-                            <div className="relative">
-                                <h3 className={`text-xl font-bold ${brand.color} tracking-wide group-hover:text-brand-green transition-colors`}>
+                            <div className="relative z-10">
+                                <h3 className="text-xl font-bold text-white tracking-wide group-hover:text-orange-500 transition-colors">
                                     {brand.name}
                                 </h3>
-                                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-brand-green transition-all duration-300 group-hover:w-full opacity-0 group-hover:opacity-100"></div>
                             </div>
                         </motion.a>
                     ))}

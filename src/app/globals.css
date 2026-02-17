@@ -1,36 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors */
-  --color-background: #F5F7F6;
-  --color-foreground: #1E1E1E;
-  --color-foreground-muted: #6C757D;
-  --color-foreground-inverse: #ffffff;
-  /* Added for dark backgrounds like Hero/Footer */
+  /* Brand Colors - Dark Theme inspired by Digirox */
+  --color-background: #0D0B1A; /* Deep dark purple-ish/navy background */
+  --color-surface: #161225;    /* Slightly lighter for cards/sections */
+  --color-foreground: #FFFFFF;
+  --color-foreground-muted: #A0A0B0;
+  
+  --color-brand-orange: #FF6B6B; /* Coral/Orange for buttons */
+  --color-brand-purple: #8E2DE2; /* Purple */
+  --color-brand-blue: #4A00E0;   /* Deep Blue/Purple */
 
-  /* New Palette */
-  --color-brand-green: #0F7C3E;
-  --color-brand-green-hover: #0C6231;
-
-  --color-brand-leaf: #6DBE45;
-  --color-brand-leaf-pale: #C8E27D;
-
-  --color-brand-blue: #1F8FD6;
-  --color-brand-blue-hover: #176CB0;
-  --color-brand-primary-blue: #2C5FA8;
-
-  --color-border: rgba(108, 117, 125, 0.2);
-  --color-glass: rgba(255, 255, 255, 0.8);
+  /* Legacy Compat (mapped to new theme so old components don't break immediately) */
+  --color-brand-green: #FF7E5F; 
+  --color-brand-green-hover: #FEB47B;
+  --color-brand-leaf: #8E2DE2; 
+  --color-brand-leaf-pale: #4A00E0;
 
   /* Font Families */
-  --font-display: var(--font-geist-sans), 'Inter', sans-serif;
+  --font-display: var(--font-geist-sans), 'Outfit', 'Inter', sans-serif;
   --font-body: var(--font-geist-sans), 'Inter', sans-serif;
 }
 
 @layer base {
   :root {
-    --background: #F5F7F6;
-    --foreground: #1E1E1E;
+    --background: #0D0B1A;
+    --foreground: #FFFFFF;
   }
 
   html {
@@ -42,54 +37,24 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     letter-spacing: -0.01em;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 500;
+  /* Typography Scale - Bold & Impactful */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 700; /* Bold as requested */
     letter-spacing: -0.02em;
+    color: #FFFFFF;
   }
 
-  /* Typography Scale */
-  h1 {
-    font-size: 3rem;
-    line-height: 1;
-  }
+  h1 { font-size: 3rem; line-height: 1.1; }
+  @media (min-width: 768px) { h1 { font-size: 4rem; } }
+  @media (min-width: 1024px) { h1 { font-size: 5rem; } }
 
-  @media (min-width: 768px) {
-    h1 {
-      font-size: 3.75rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    h1 {
-      font-size: 4.5rem;
-    }
-  }
-
-  h2 {
-    font-size: 1.875rem;
-    line-height: 1.25;
-  }
-
-  @media (min-width: 768px) {
-    h2 {
-      font-size: 2.25rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    h2 {
-      font-size: 3rem;
-    }
-  }
+  h2 { font-size: 2.25rem; line-height: 1.2; }
+  @media (min-width: 768px) { h2 { font-size: 3rem; } }
 }
 
 @layer components {
@@ -97,18 +62,36 @@
     @apply bg-white/5 backdrop-blur-md border border-white/10;
   }
 
-  .text-gradient-brand {
-    background: linear-gradient(135deg, #fff 0%, #a7f3d0 100%);
+  .text-gradient-orange {
+    background: linear-gradient(90deg, #FF9966 0%, #FF5E62 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
+  .text-gradient-purple {
+    background: linear-gradient(90deg, #DA22FF 0%, #9733EE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-gradient-orange {
+    background: linear-gradient(90deg, #FF9966 0%, #FF5E62 100%);
+  }
+  
+  .bg-gradient-purple {
+    background: linear-gradient(90deg, #DA22FF 0%, #9733EE 100%);
+  }
+
   .btn-primary {
-    @apply px-6 py-3 bg-brand-green hover:bg-brand-green/90 text-white font-medium tracking-wide transition-all duration-300;
+    @apply px-8 py-3 rounded-full text-white font-bold uppercase tracking-wide transition-all duration-300 shadow-lg hover:shadow-orange-500/25 hover:-translate-y-1 bg-gradient-to-r from-[#FF9966] to-[#FF5E62];
   }
 
   .btn-outline {
-    @apply px-6 py-3 border border-white/20 hover:bg-white/5 text-white font-medium tracking-wide transition-all duration-300;
+    @apply px-8 py-3 rounded-full border border-white/20 hover:bg-white/5 text-white font-bold uppercase tracking-wide transition-all duration-300;
+  }
+  
+  .section-padding {
+    @apply py-20 md:py-32;
   }
 }
 

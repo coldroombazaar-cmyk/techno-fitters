@@ -1,93 +1,87 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 const STEPS = [
     {
-        number: '01',
-        title: 'Consultation',
+        number: '01.',
+        title: 'Identify Client Requirements',
         description: 'We analyze your requirements, load calculations, and site conditions.'
     },
     {
-        number: '02',
-        title: 'Design',
+        number: '02.',
+        title: 'Craft Innovative Solutions',
         description: 'Engineering optimized layouts and thermal load planning using CAD.'
     },
     {
-        number: '03',
-        title: 'Fabrication',
+        number: '03.',
+        title: 'Develop and Deploy Projects',
         description: 'Precision manufacturing of panels and refrigeration units.'
     },
     {
-        number: '04',
-        title: 'Installation',
+        number: '04.',
+        title: 'Review and Improve Performance',
         description: 'Expert on-site assembly, sealing, and system commissioning.'
-    },
-    {
-        number: '05',
-        title: 'Support',
-        description: 'Ongoing maintenance checks and 24/7 technical support.'
     }
 ];
 
 export default function ProcessSection() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ['start start', 'end end'],
-    });
-    // Desktop: line starts filling when section is in view (like 2nd image), not as soon as section enters
-    const desktopProgress = useTransform(scrollYProgress, [0.42, 0.68, 1], [0, 0.5, 1]);
-    const desktopLineWidth = useTransform(desktopProgress, (v) => `${v * 100}%`);
-    const mobileProgress = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.5, 1]);
-    const mobileLineHeight = useTransform(mobileProgress, (v) => `${v * 100}%`);
-
     return (
-        <section id="process" className="pt-12 md:pt-8 pb-4 md:pb-2 bg-gradient-to-b from-gray-50 to-white">
-            <div ref={containerRef} className="md:relative md:h-[105vh]">
-                <div className="container mx-auto px-6 md:sticky md:top-0 md:h-screen md:flex md:flex-col md:justify-center">
-                    <div className="text-center mb-8 md:mb-6">
-                        <p className="text-brand-green font-semibold tracking-[0.2em] uppercase text-sm mb-2">Our Methodology</p>
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 tracking-tight">Streamlined Execution</h2>
-                        <div className="mx-auto mt-3 w-16 h-0.5 bg-brand-green/60 rounded-full" />
+        <section className="section-padding bg-[#0D0B1A] relative overflow-hidden">
+            {/* Background Hex Pattern (Optional simulation) */}
+            <div className="absolute inset-0 bg-[url('/assets/hex-pattern.png')] opacity-5 pointer-events-none" />
+
+            <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
+                <div className="flex flex-col lg:flex-row gap-16 items-start">
+
+                    {/* Left Steps Grid */}
+                    <div className="lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {STEPS.map((step, index) => (
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                                className={`p-8 rounded-2xl border border-gray-800 transition-all duration-300 hover:shadow-2xl hover:border-gray-700 bg-white/5 backdrop-blur-sm group
+                                    ${index === 0 ? 'bg-gradient-to-br from-orange-400 to-pink-500 border-none' : ''}
+                                    ${index === 3 ? 'bg-gradient-to-br from-purple-500 to-indigo-500 border-none' : ''}
+                                `}
+                            >
+                                <div className={`text-4xl font-bold mb-4 font-outline-2 
+                                    ${index === 0 || index === 3 ? 'text-white' : 'text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-600'}
+                                `}>
+                                    {step.number}
+                                </div>
+                                <h3 className={`text-xl font-bold mb-3 ${index === 0 || index === 3 ? 'text-white' : 'text-white'}`}>
+                                    {step.title}
+                                </h3>
+                                <p className={`text-sm leading-relaxed ${index === 0 || index === 3 ? 'text-white/90' : 'text-gray-400'}`}>
+                                    {step.description}
+                                </p>
+                            </motion.div>
+                        ))}
                     </div>
 
-                    <div className="relative">
-                        {/* Desktop: horizontal timeline */}
-                        <div className="hidden md:block absolute top-[4.5rem] left-0 w-full h-[3px] bg-gray-200/80 rounded-full" />
-                        <motion.div className="hidden md:block absolute top-[4.5rem] left-0 h-[3px] bg-gradient-to-r from-brand-green to-brand-leaf rounded-full origin-left z-[1]" style={{ width: desktopLineWidth }} />
-
-                        {/* Mobile: vertical line */}
-                        <div className="md:hidden absolute left-6 top-8 bottom-8 w-[3px] bg-gray-200/80 rounded-full" />
-                        <motion.div className="md:hidden absolute left-6 top-8 w-[3px] bg-brand-green rounded-full origin-top z-[1]" style={{ height: mobileLineHeight }} />
-
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-5">
-                            {STEPS.map((step, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: 16 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: index * 0.08, duration: 0.35 }}
-                                    className="relative pt-8 md:pt-[4.5rem] group pl-12 md:pl-0"
-                                >
-                                    {/* Desktop: dot on timeline */}
-                                    <div className="hidden md:block absolute top-[4.5rem] left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-2 border-brand-green shadow-md group-hover:scale-110 group-hover:bg-brand-green group-hover:shadow-brand-green/25 transition-all duration-300 z-10" />
-
-                                    <div className="md:text-center bg-white md:bg-transparent rounded-2xl md:rounded-none p-5 md:p-0 border border-gray-100 md:border-0 shadow-sm md:shadow-none hover:shadow-md md:hover:shadow-none hover:border-brand-green/10 md:hover:border-0 transition-all duration-300">
-                                        <span className="text-4xl sm:text-5xl md:text-4xl font-bold text-gray-300 absolute -top-1 md:top-0 left-0 md:left-1/2 md:-translate-x-1/2 select-none group-hover:text-brand-green/40 transition-colors tabular-nums">
-                                            {step.number}
-                                        </span>
-                                        <h3 className="text-lg md:text-xl font-semibold text-gray-900 mt-3 md:mt-4 mb-2 relative z-10">{step.title}</h3>
-                                        <p className="text-gray-600 text-sm leading-relaxed relative z-10">
-                                            {step.description}
-                                        </p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
+                    {/* Right Content */}
+                    <div className="lg:w-1/2 pt-12">
+                        <span className="flex items-center gap-2 text-orange-500 font-bold tracking-widest text-sm uppercase mb-4">
+                            <span className="w-2 h-2 rounded-full bg-orange-500" />
+                            Our Process
+                        </span>
+                        <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                            Strategic Steps to <br />
+                            Reach Your <span className="text-white">Digital Goals</span>
+                        </h2>
+                        <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                            Our streamlined process is designed to help you achieve your digital goals efficiently. We start by understanding your unique needs, then craft tailored solutions, followed by development and implementation. Finally, we evaluate and optimize our efforts to ensure ongoing success and growth for your brand.
+                        </p>
+                        <Link href="#contact" className="bg-gradient-to-r from-orange-400 to-pink-500 px-10 py-4 rounded-full text-white font-bold uppercase text-sm tracking-widest shadow-lg hover:shadow-orange-500/20 hover:-translate-y-1 transition-all duration-300 inline-block">
+                            Get Started
+                        </Link>
                     </div>
+
                 </div>
             </div>
         </section>

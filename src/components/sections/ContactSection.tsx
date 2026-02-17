@@ -45,12 +45,14 @@ export default function ContactSection() {
         } catch (error: unknown) {
             setStatus('error');
             setMessage(error instanceof Error ? error.message : 'Something went wrong. Please try again later.');
+        } finally {
+            setStatus('idle');
         }
     };
 
     return (
-        <section id="contact" className="py-24 bg-white relative">
-            <div className="container mx-auto px-8 md:px-12 lg:px-20">
+        <section id="contact" className="section-padding bg-[#0D0B1A] relative">
+            <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
                 <div className="flex flex-col lg:flex-row gap-16">
                     {/* Left Column: Contact Info */}
                     <motion.div
@@ -58,18 +60,25 @@ export default function ContactSection() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         className="lg:w-1/3"
+                        transition={{ duration: 0.5 }}
                     >
-                        <h2 className="text-4xl font-light text-brand-green mb-2 uppercase tracking-wide">Get In Touch</h2>
-                        <div className="w-20 h-1 bg-brand-ripple mb-10"></div>
+                        <span className="flex items-center gap-2 text-orange-500 font-bold tracking-widest text-sm uppercase mb-4">
+                            <span className="w-2 h-2 rounded-full bg-orange-500" />
+                            Get In Touch
+                        </span>
+                        <h2 className="text-5xl font-bold text-white mb-6">Contact Us</h2>
+                        <p className="text-gray-400 mb-12">
+                            Have questions? We are always here to help. Get in touch with us today.
+                        </p>
 
                         <div className="space-y-8">
-                            <div className="flex gap-4 group">
-                                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-ripple to-blue-600 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <div className="flex gap-6 group">
+                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform duration-300">
                                     <FaMapMarkerAlt />
                                 </div>
                                 <div>
-                                    <h4 className="text-brand-green font-bold text-lg mb-1">Address</h4>
-                                    <p className="text-gray-600 leading-relaxed max-w-xs">
+                                    <h4 className="text-white font-bold text-lg mb-1">Address</h4>
+                                    <p className="text-gray-400 leading-relaxed text-sm">
                                         H-58, Tetutala Road, Molla Para,<br />
                                         PO - Kajipara, Madhyamgram,<br />
                                         Kolkata - 700125, West Bengal.
@@ -77,41 +86,28 @@ export default function ContactSection() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 group">
-                                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-ripple to-blue-600 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <div className="flex gap-6 group">
+                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform duration-300">
                                     <FaPhoneAlt />
                                 </div>
                                 <div>
-                                    <h4 className="text-brand-green font-bold text-lg mb-1">Phone</h4>
-                                    <p className="text-gray-600 hover:text-brand-highlight transition-colors">
+                                    <h4 className="text-white font-bold text-lg mb-1">Phone</h4>
+                                    <p className="text-gray-400 font-medium hover:text-orange-500 transition-colors">
                                         <a href="tel:+917860000929">+91 786-0000-929</a>
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 group">
-                                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-brand-ripple to-blue-600 text-white flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <div className="flex gap-6 group">
+                                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-orange-400 to-pink-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform duration-300">
                                     <FaEnvelope />
                                 </div>
                                 <div>
-                                    <h4 className="text-brand-green font-bold text-lg mb-1">Email</h4>
-                                    <p className="text-gray-600 hover:text-brand-highlight transition-colors">
+                                    <h4 className="text-white font-bold text-lg mb-1">Email</h4>
+                                    <p className="text-gray-400 font-medium hover:text-orange-500 transition-colors">
                                         <a href="mailto:info@technofitters.in">info@technofitters.in</a>
                                     </p>
                                 </div>
-                            </div>
-
-                            {/* Map Embed */}
-                            <div className="mt-8 rounded-xl overflow-hidden shadow-md border border-gray-100 h-64 w-full">
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3681.338575975156!2d88.45663737597656!3d22.67843797941575!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89f1f0d3b6fbd%3A0x7d6b3d6f1f0d3b6f!2sTetutala%20Rd%2C%20Madhyamgram%2C%20Kolkata%2C%20West%20Bengal%20700129!5e0!3m2!1sen!2sin!4v1707920000000!5m2!1sen!2sin"
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                ></iframe>
                             </div>
                         </div>
                     </motion.div>
@@ -121,42 +117,42 @@ export default function ContactSection() {
                         initial={{ opacity: 0, x: 20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.2 }}
-                        className="lg:w-2/3 bg-gray-50 p-8 md:p-12 rounded-2xl border border-gray-100 shadow-sm"
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="lg:w-2/3 bg-white/5 p-8 md:p-12 rounded-3xl border border-gray-800 backdrop-blur-sm shadow-xl"
                     >
-                        <h3 className="text-3xl font-medium text-brand-green mb-8">Send Us A Message</h3>
+                        <h3 className="text-3xl font-bold text-white mb-8">Send Us A Message</h3>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <input
                                     type="text"
                                     name="name"
-                                    placeholder="Name*"
+                                    placeholder="Your Name*"
                                     required
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-ripple focus:ring-2 focus:ring-brand-ripple/20 outline-none transition-all placeholder:text-gray-400 text-gray-800 bg-white"
+                                    className="w-full px-6 py-4 rounded-full border border-gray-700 bg-gray-900/50 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-500"
                                 />
                                 <input
                                     type="email"
                                     name="email"
-                                    placeholder="Email*"
+                                    placeholder="Your Email*"
                                     required
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-ripple focus:ring-2 focus:ring-brand-ripple/20 outline-none transition-all placeholder:text-gray-400 text-gray-800 bg-white"
+                                    className="w-full px-6 py-4 rounded-full border border-gray-700 bg-gray-900/50 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-500"
                                 />
                             </div>
 
                             <input
-type="tel"
+                                type="tel"
                                 name="phone"
-                                placeholder="Phone*"
+                                placeholder="Phone Number*"
                                 required
                                 value={formData.phone}
                                 minLength={10}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-ripple focus:ring-2 focus:ring-brand-ripple/20 outline-none transition-all placeholder:text-gray-400 text-gray-800 bg-white"
+                                className="w-full px-6 py-4 rounded-full border border-gray-700 bg-gray-900/50 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-500"
                             />
 
                             <textarea
@@ -165,52 +161,24 @@ type="tel"
                                 rows={4}
                                 value={formData.message}
                                 onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-brand-ripple focus:ring-2 focus:ring-brand-ripple/20 outline-none transition-all placeholder:text-gray-400 text-gray-800 bg-white resize-none"
+                                className="w-full px-6 py-4 rounded-3xl border border-gray-700 bg-gray-900/50 text-white focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-gray-500 resize-none"
                             ></textarea>
 
                             <button
                                 type="submit"
                                 disabled={status === 'submitting'}
-                                className="px-8 py-3 bg-gradient-to-r from-brand-green to-brand-leaf text-white font-medium rounded-lg shadow-lg shadow-brand-green/30 hover:shadow-brand-green/50 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 min-h-[48px]"
+                                className="px-10 py-4 bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold uppercase tracking-wider rounded-full shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full md:w-auto"
                             >
-                                {status === 'submitting' ? (
-                                    <>
-                                        <svg
-                                            className="animate-spin h-4 w-4 text-white"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            aria-hidden="true"
-                                        >
-                                            <circle
-                                                className="opacity-25"
-                                                cx="12"
-                                                cy="12"
-                                                r="10"
-                                                stroke="currentColor"
-                                                strokeWidth="4"
-                                            />
-                                            <path
-                                                className="opacity-75"
-                                                fill="currentColor"
-                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                            />
-                                        </svg>
-                                        Sending...
-                                    </>
-                                ) : (
-                                    'Send Your Message'
-                                )}
+                                {status === 'submitting' ? 'Sending...' : 'Send Message'}
                             </button>
 
-                            {/* Status Messages */}
                             {status === 'success' && (
-                                <p className="text-green-600 font-medium animate-fade-in mt-4">
+                                <p className="text-green-500 font-medium animate-fade-in mt-4">
                                     ✅ {message}
                                 </p>
                             )}
                             {status === 'error' && (
-                                <p className="text-red-600 font-medium animate-fade-in mt-4">
+                                <p className="text-red-500 font-medium animate-fade-in mt-4">
                                     ❌ {message}
                                 </p>
                             )}
